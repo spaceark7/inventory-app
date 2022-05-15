@@ -1,0 +1,3 @@
+[submodule "inventory-app"]
+	path = inventory-app
+	url = https://github.com/spaceark7/app-tes.git
