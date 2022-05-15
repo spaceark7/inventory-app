@@ -16,26 +16,27 @@ export const login = (email, password) => async (dispatch) => {
         'Content-type': 'application/json',
       },
     }
-
+    console.log('pre-post')
     const { data } = await axios.post(
       '/api/users/login',
       { email, password },
       config
     )
-    const [user_data] = data
+    console.log(data)
 
     dispatch({
       type: USER_LOGIN_SUCCESS,
-      payload: user_data,
+      payload: data,
     })
 
-    localStorage.setItem('userInfo', JSON.stringify(user_data))
+    localStorage.setItem('userInfo', JSON.stringify(data))
   } catch (error) {
+    console.log('from action', error)
     dispatch({
       type: USER_LOGIN_FAIL,
       payload:
-        error.response && error.respone.data.message
-          ? error.respone.data.message
+        error.response && error.response.data.message
+          ? error.response.data.message
           : error.response,
     })
   }

@@ -12,36 +12,34 @@ const { user } = new PrismaClient()
 const authUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body
 
-  try {
-    const user_data = await user.findUnique({
-      where: {
-        email: email,
-      },
-      include: {
-        access_level: true,
-      },
-    })
+  const user_data = await user.findUnique({
+    where: {
+      email: email,
+    },
+    include: {
+      access_level: true,
+    },
+  })
 
-    if (user_data) {
-      console.log(await bcrypt.compare(password, user_data.password))
-      if (await bcrypt.compare(password, user_data.password)) {
-        res.json({
-          id: user_data.id,
-          username: user_data.username,
-          email: user_data.email,
-          first_name: user_data.first_name,
-          last_name: user_data.last_name,
-          image_path: user_data.image_path,
-          password: user_data.password,
-          access_level: user_data.access_level,
-          token: generateToken(user_data.id, user_data.email),
-        })
-      } else {
-        res.status(401).json({ message: 'Invalid credentials' })
-      }
+  if (user_data) {
+    if (await bcrypt.compare(password, user_data.password)) {
+      res.json({
+        id: user_data.id,
+        username: user_data.username,
+        email: user_data.email,
+        first_name: user_data.first_name,
+        last_name: user_data.last_name,
+        image_path: user_data.image_path,
+        password: user_data.password,
+        access_level: user_data.access_level,
+        token: generateToken(user_data.id, user_data.email),
+      })
+    } else {
+      res.status(401).json({ message: 'Invalid credentials' })
     }
-  } catch (error) {
-    res.status(404).json({ message: `${error.message}` })
+  } else {
+    res.status(401)
+    throw new Error('Invalid email or password')
   }
 })
 

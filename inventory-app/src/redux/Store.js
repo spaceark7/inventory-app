@@ -21,7 +21,7 @@ const store = configureStore(
     },
   },
   initialState,
-  composeWithDevTools(applyMiddleware([...middleware]))
+  composeWithDevTools(applyMiddleware(...middleware))
 )
 
 export default store
