@@ -5,25 +5,30 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import Breadcrumb from '../components/Breadcrumb'
 import { getUserDetail } from '../redux/action/userAction'
 import Clock from 'react-live-clock'
-import { PresentationChartLineIcon } from '@heroicons/react/outline'
+import {
+  PencilAltIcon,
+  PresentationChartLineIcon,
+} from '@heroicons/react/outline'
+import InsightCard from '../components/InsightCard'
 
 const WelcomeScreen = () => {
   const location = useLocation()
   const navigate = useNavigate()
   const path = location.pathname.split('/')
   const [timezone, setTimeZone] = useState('')
-  const dispatch = useDispatch()
   const [access, setAccess] = useState([])
+
+  const dispatch = useDispatch()
+  const userLogin = useSelector((state) => state.userLogin)
+  const { userInfo } = userLogin
+
   const userDetail = useSelector((state) => state.userDetail)
   const { loading, error, user } = userDetail
 
-  const userLogin = useSelector((state) => state.userLogin)
-  const { userInfo } = userLogin
   const date = new Date().toLocaleString()
 
   useEffect(() => {
     let tz = Intl.DateTimeFormat().resolvedOptions().timeZone
-
     setTimeZone(tz)
     if (!userInfo) {
       navigate('/login')
@@ -38,7 +43,7 @@ const WelcomeScreen = () => {
   }, [dispatch, navigate, userInfo, user])
 
   return (
-    <div>
+    <div className=''>
       {loading ? (
         'loading'
       ) : error ? (
@@ -47,25 +52,31 @@ const WelcomeScreen = () => {
         <>
           <Breadcrumb pageName={'Welcome Page'} />
           <div className='px-4'>
-            <div className='grid grid-rows-2 mt-4  py-4  h-screen min-h-[90vh]'>
-              <div className='user-banner'>
+            <div className='grid grid-flow-row space-y-4 mt-4 py-4 auto-rows-min'>
+              <div className='user-banner h-min flex flex-row'>
                 <div className='w-2/3 bg-gradient-to-r w-full from-primary-blue to-secondary-blue text-white rounded-md px-6 pt-6 flex shadow-lg'>
-                  <div className='w-1/2 pt-4'>
+                  <div className='w-1/2 pt-2'>
                     <h2 className='text-5xl font-body'>
                       Halo,{' '}
                       <span className='font-medium'>{user.first_name}</span>
                     </h2>
+                    <div className='bg-slate-100  inline-flex items-center text-primary-blue text-xs font-semibold rounded-md w-max py-1 px-2 mt-2 hover:shadow-lg cursor-pointer hover:text-sky-700'>
+                      <span className='mr-1'>Edit profile </span>{' '}
+                      <span>
+                        <PencilAltIcon className='h-4 w-4' />
+                      </span>
+                    </div>
                     <div className='mt-4 text-white/80 text-sm'>
                       <Moment
                         element={'div'}
                         local
-                        format='ddd, DD/MM/YYYY'
+                        format='ddd, DD MMM YYYY'
                         locale='id'
                         date={date}
                       />
                       <Clock format='HH:mm:ss' ticking timezone={timezone} />
                     </div>
-                    <div className='mt-4 text-white/80  w-fit py-2'>
+                    <div className='mt-2 text-white/80  w-fit py-2'>
                       <h2 className='text-sm'>Akses Level Anda :</h2>
                       <div className='space-x-2 mt-1'>
                         {access &&
@@ -88,184 +99,24 @@ const WelcomeScreen = () => {
                     />
                   </div>
                 </div>
-                <div className='w-1/3'></div>
+                <div className='w-1/3 ml-4 bg-white rounded-md shadow-md px-4 py-4'>
+                  <h3 className='font-semibold text-primary-blue pb-3 border-b border-b-slate-200 mb-6'>
+                    Quick Menu
+                  </h3>
+                  <span className='px-4 font-body py-2 mr-2 border rounded-md border-primary-blue border-opacity-60 w-fit text-primary-blue'>
+                    Buat Penjualan
+                  </span>
+                  <span className='px-4 font-body py-2 border rounded-md border-primary-blue border-opacity-60 w-fit text-primary-blue'>
+                    Lihat Stock
+                  </span>
+                </div>
               </div>
-              <div className='progress-info justify-start flex flex-wrap  '>
-                <div className='bg-white shadow-md h-fit mb-4 mr-4 px-4 py-3 rounded-lg'>
-                  <div className='flex justify-between items-center border-b pb-2 border-b-slate-300 mb-2'>
-                    <h4 className='text-slate-600 font-semibold'>
-                      Inventory Insight
-                    </h4>
-                    <PresentationChartLineIcon className='h-5 w-5 text-secondary-blue' />
-                  </div>
-                  <div className='flex flex-row justify-around py-4'>
-                    {' '}
-                    <div className='detail-card w-fit p-2 border border-slate-400 rounded-md '>
-                      <h5 className='text-slate-600 text-sm mb-1'>
-                        Total Produk
-                      </h5>
-                      <h1 className='text-4xl text-center text-primary-blue font-semibold'>
-                        50
-                      </h1>
-                    </div>
-                    <div className='detail-card w-fit p-2 border border-slate-400 rounded-md '>
-                      <h5 className='text-slate-600 text-sm mb-1'>
-                        Total Produk
-                      </h5>
-                      <h1 className='text-4xl text-center text-primary-blue font-semibold'>
-                        50
-                      </h1>
-                    </div>
-                    <div className='detail-card w-fit p-2 border border-slate-400 rounded-md '>
-                      <h5 className='text-slate-600 text-sm mb-1'>
-                        Total Produk
-                      </h5>
-                      <h1 className='text-4xl text-center text-primary-blue font-semibold'>
-                        50
-                      </h1>
-                    </div>
-                  </div>
-                </div>
-                <div className='bg-white shadow-md h-fit mb-4  mr-4   px-4 py-3 rounded-lg'>
-                  <div className='flex justify-between items-center border-b pb-2 border-b-slate-300 mb-2'>
-                    <h4 className='text-slate-600 font-semibold'>
-                      Order Insight
-                    </h4>
-                    <PresentationChartLineIcon className='h-5 w-5 text-secondary-blue' />
-                  </div>
-                  <div className='flex flex-row justify-around py-4'>
-                    {' '}
-                    <div className='detail-card w-fit p-2 border border-slate-400 rounded-md '>
-                      <h5 className='text-slate-600 text-sm mb-1'>
-                        Total Produk
-                      </h5>
-                      <h1 className='text-4xl text-center text-primary-blue font-semibold'>
-                        50
-                      </h1>
-                    </div>
-                    <div className='detail-card w-fit p-2 border border-slate-400 rounded-md '>
-                      <h5 className='text-slate-600 text-sm mb-1'>
-                        Total Produk
-                      </h5>
-                      <h1 className='text-4xl text-center text-primary-blue font-semibold'>
-                        50
-                      </h1>
-                    </div>
-                    <div className='detail-card w-fit p-2 border border-slate-400 rounded-md '>
-                      <h5 className='text-slate-600 text-sm mb-1'>
-                        Total Produk
-                      </h5>
-                      <h1 className='text-4xl text-center text-primary-blue font-semibold'>
-                        50
-                      </h1>
-                    </div>
-                  </div>
-                </div>
-                <div className='bg-white shadow-md h-fit mb-4 mr-4  px-4 py-3 rounded-lg'>
-                  <div className='flex justify-between items-center border-b pb-2 border-b-slate-300 mb-2'>
-                    <h4 className='text-slate-600 font-semibold'>
-                      Sales Insight
-                    </h4>
-                    <PresentationChartLineIcon className='h-5 w-5 text-secondary-blue' />
-                  </div>
-                  <div className='flex flex-row justify-around py-4'>
-                    {' '}
-                    <div className='detail-card w-fit p-2 border border-slate-400 rounded-md '>
-                      <h5 className='text-slate-600 text-sm mb-1'>
-                        Total Produk
-                      </h5>
-                      <h1 className='text-4xl text-center text-primary-blue font-semibold'>
-                        50
-                      </h1>
-                    </div>
-                    <div className='detail-card w-fit p-2 border border-slate-400 rounded-md '>
-                      <h5 className='text-slate-600 text-sm mb-1'>
-                        Total Produk
-                      </h5>
-                      <h1 className='text-4xl text-center text-primary-blue font-semibold'>
-                        50
-                      </h1>
-                    </div>
-                    <div className='detail-card w-fit p-2 border border-slate-400 rounded-md '>
-                      <h5 className='text-slate-600 text-sm mb-1'>
-                        Total Produk
-                      </h5>
-                      <h1 className='text-4xl text-center text-primary-blue font-semibold'>
-                        50
-                      </h1>
-                    </div>
-                  </div>
-                </div>
-                <div className='bg-white shadow-md h-fit mb-4  mr-4  px-4 py-3 rounded-lg'>
-                  <div className='flex justify-between items-center border-b pb-2 border-b-slate-300 mb-2'>
-                    <h4 className='text-slate-600 font-semibold'>
-                      Sales Insight
-                    </h4>
-                    <PresentationChartLineIcon className='h-5 w-5 text-secondary-blue' />
-                  </div>
-                  <div className='flex flex-row justify-around py-4'>
-                    {' '}
-                    <div className='detail-card w-fit p-2 border border-slate-400 rounded-md '>
-                      <h5 className='text-slate-600 text-sm mb-1'>
-                        Total Produk
-                      </h5>
-                      <h1 className='text-4xl text-center text-primary-blue font-semibold'>
-                        50
-                      </h1>
-                    </div>
-                    <div className='detail-card w-fit p-2 border border-slate-400 rounded-md '>
-                      <h5 className='text-slate-600 text-sm mb-1'>
-                        Total Produk
-                      </h5>
-                      <h1 className='text-4xl text-center text-primary-blue font-semibold'>
-                        50
-                      </h1>
-                    </div>
-                    <div className='detail-card w-fit p-2 border border-slate-400 rounded-md '>
-                      <h5 className='text-slate-600 text-sm mb-1'>
-                        Total Produk
-                      </h5>
-                      <h1 className='text-4xl text-center text-primary-blue font-semibold'>
-                        50
-                      </h1>
-                    </div>
-                  </div>
-                </div>
-                <div className='bg-white shadow-md h-fit  mb-4 mr-4  px-4 py-3 rounded-lg'>
-                  <div className='flex justify-between items-center border-b pb-2 border-b-slate-300 mb-2'>
-                    <h4 className='text-slate-600 font-semibold'>
-                      Sales Insight
-                    </h4>
-                    <PresentationChartLineIcon className='h-5 w-5 text-secondary-blue' />
-                  </div>
-                  <div className='flex flex-row justify-around py-4'>
-                    {' '}
-                    <div className='detail-card w-fit p-2 border border-slate-400 rounded-md '>
-                      <h5 className='text-slate-600 text-sm mb-1'>
-                        Total Produk
-                      </h5>
-                      <h1 className='text-4xl text-center text-primary-blue font-semibold'>
-                        50
-                      </h1>
-                    </div>
-                    <div className='detail-card w-fit p-2 border border-slate-400 rounded-md '>
-                      <h5 className='text-slate-600 text-sm mb-1'>
-                        Total Produk
-                      </h5>
-                      <h1 className='text-4xl text-center text-primary-blue font-semibold'>
-                        50
-                      </h1>
-                    </div>
-                    <div className='detail-card w-fit p-2 border border-slate-400 rounded-md '>
-                      <h5 className='text-slate-600 text-sm mb-1'>
-                        Total Produk
-                      </h5>
-                      <h1 className='text-4xl text-center text-primary-blue font-semibold'>
-                        50
-                      </h1>
-                    </div>
-                  </div>
-                </div>
+              <div className='progress-info justify-start flex flex-wrap h-min'>
+                <InsightCard />
+                <InsightCard />
+                <InsightCard />
+                <InsightCard />
+                <InsightCard />
               </div>
             </div>
           </div>
