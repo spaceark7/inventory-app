@@ -1,4 +1,7 @@
 import {
+  USER_DETAIL_FAIL,
+  USER_DETAIL_REQUEST,
+  USER_DETAIL_SUCCESS,
   USER_LOGIN_FAIL,
   USER_LOGIN_REQUEST,
   USER_LOGIN_SUCCESS,
@@ -22,7 +25,6 @@ export const login = (email, password) => async (dispatch) => {
       { email, password },
       config
     )
-    console.log(data)
 
     dispatch({
       type: USER_LOGIN_SUCCESS,
@@ -34,6 +36,41 @@ export const login = (email, password) => async (dispatch) => {
     console.log('from action', error)
     dispatch({
       type: USER_LOGIN_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.response,
+    })
+  }
+}
+
+export const getUserDetail = (id) => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: USER_DETAIL_REQUEST,
+    })
+
+    const {
+      userLogin: { userInfo },
+    } = getState()
+
+    const config = {
+      headers: {
+        'Content-type': 'application/json',
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    }
+
+    const { data } = await axios.get(`/api/users/${id}`, config)
+
+    dispatch({
+      type: USER_DETAIL_SUCCESS,
+      payload: data,
+    })
+  } catch (error) {
+    console.log('from action', error)
+    dispatch({
+      type: USER_DETAIL_FAIL,
       payload:
         error.response && error.response.data.message
           ? error.response.data.message

@@ -16,7 +16,6 @@ const Login = () => {
   const { loading, error, userInfo } = userLogin
 
   useEffect(() => {
-    console.log(loading)
     if (userInfo) {
       Navigate(location.state?.from || '/')
     }

@@ -43,7 +43,7 @@ const HomePage = () => {
           </div>
         </div>
       </nav>
-      <div className='w-full h-screen overflow-y-auto'>
+      <div className='w-full h-screen overflow-y-auto pb-10'>
         <Routes>
           <Route path='/' element={<WelcomeScreen />} />
           <Route path='dashboard' element={<Dashboard />} />

@@ -30,7 +30,6 @@ const authUser = asyncHandler(async (req, res) => {
         first_name: user_data.first_name,
         last_name: user_data.last_name,
         image_path: user_data.image_path,
-        password: user_data.password,
         access_level: user_data.access_level,
         token: generateToken(user_data.id, user_data.email),
       })
@@ -132,6 +131,7 @@ const getUserProfile = asyncHandler(async (req, res) => {
       id: user_data.id,
       username: user_data.username,
       email: user_data.email,
+      access_level: user_data.access_level,
       first_name: user_data.first_name,
       last_name: user_data.last_name,
       image_path: user_data.image_path,
