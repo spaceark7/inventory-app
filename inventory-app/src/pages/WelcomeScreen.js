@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import Moment from 'react-moment'
 import { useDispatch, useSelector } from 'react-redux'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import Breadcrumb from '../components/Breadcrumb'
 import { getUserDetail } from '../redux/action/userAction'
 import Clock from 'react-live-clock'
@@ -30,17 +30,17 @@ const WelcomeScreen = () => {
   useEffect(() => {
     let tz = Intl.DateTimeFormat().resolvedOptions().timeZone
     setTimeZone(tz)
+    console.log('from detail:', error)
     if (!userInfo) {
       navigate('/login')
     } else {
-      if (!user.first_name) {
+      if (!user || !user.username || error) {
         dispatch(getUserDetail('profile'))
       } else {
         setAccess(user.access_level)
-        console.log(user)
       }
     }
-  }, [dispatch, navigate, userInfo, user])
+  }, [dispatch, navigate, userInfo, user, error])
 
   return (
     <div className=''>
@@ -60,12 +60,14 @@ const WelcomeScreen = () => {
                       Halo,{' '}
                       <span className='font-medium'>{user.first_name}</span>
                     </h2>
-                    <div className='bg-slate-100  inline-flex items-center text-primary-blue text-xs font-semibold rounded-md w-max py-1 px-2 mt-2 hover:shadow-lg cursor-pointer hover:text-sky-700'>
-                      <span className='mr-1'>Edit profile </span>{' '}
-                      <span>
-                        <PencilAltIcon className='h-4 w-4' />
-                      </span>
-                    </div>
+                    <Link to={`/user-edit/${user.id}`}>
+                      <div className='bg-slate-100  inline-flex items-center text-primary-blue text-xs font-semibold rounded-md w-max py-1 px-2 mt-2 hover:shadow-lg cursor-pointer hover:text-sky-700'>
+                        <span className='mr-1'>Edit profile </span>{' '}
+                        <span>
+                          <PencilAltIcon className='h-4 w-4' />
+                        </span>
+                      </div>
+                    </Link>
                     <div className='mt-4 text-white/80 text-sm'>
                       <Moment
                         element={'div'}

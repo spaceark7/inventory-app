@@ -13,6 +13,7 @@ const protect = asycnHandler(async (req, res, next) => {
     try {
       token = req.headers.authorization.split(' ')[1]
       const decoded = jwt.verify(token, process.env.JWT_SECRET)
+
       req.user = await user.findUnique({
         where: {
           id: decoded.id,
@@ -28,7 +29,7 @@ const protect = asycnHandler(async (req, res, next) => {
 
       next()
     } catch (error) {
-      console.error(error)
+      console.error('error :', error)
       res.status(401)
       throw new Error(
         'Bad Token : You are not authorized to access this resource'

@@ -59,8 +59,6 @@ const registerUser = asyncHandler(async (req, res) => {
 
   const salt = await bcrypt.genSalt(10)
 
-  console.log(access_level.map((access_level) => access_level))
-
   if (!email) {
     res.status(400)
     throw new Error('Invalid data : User registration failed @noemail')
@@ -101,7 +99,6 @@ const registerUser = asyncHandler(async (req, res) => {
       first_name: new_user_data.first_name,
       last_name: new_user_data.last_name,
       email: new_user_data.email,
-      password: new_user_data.password,
       image_path: new_user_data.image_path,
       access_level: new_user_data.access_level,
       token: generateToken(new_user_data.id, new_user_data.email),
@@ -126,12 +123,13 @@ const getUserProfile = asyncHandler(async (req, res) => {
     },
   })
 
-  if (user) {
+  if (user_data) {
     res.json({
       id: user_data.id,
       username: user_data.username,
       email: user_data.email,
       access_level: user_data.access_level,
+      password: user_data.password,
       first_name: user_data.first_name,
       last_name: user_data.last_name,
       image_path: user_data.image_path,
@@ -141,4 +139,57 @@ const getUserProfile = asyncHandler(async (req, res) => {
   }
 })
 
-export { authUser, getUserProfile, registerUser }
+const updateUserProfile = asyncHandler(async (req, res) => {
+  const salt = await bcrypt.genSalt(10)
+  console.log(req.body)
+  const user_data = await user.findUnique({
+    where: {
+      id: req.user.id,
+    },
+    include: {
+      access_level: true,
+    },
+  })
+
+  if (user_data) {
+    const updated_user = await user.update({
+      where: {
+        email: user_data.email,
+      },
+      data: {
+        username: req.body.username || user_data.username,
+        first_name: req.body.first_name || user_data.first_name,
+        last_name: req.body.last_name || user_data.last_name,
+        image_path: req.body.image_path || user_data.image_path,
+        password: user_data.password || req.body.password,
+        access_level: {
+          set:
+            req.body.access_level ||
+            user_data.access_level.map((access_level) => ({
+              id: access_level.id,
+            })),
+        },
+        updated_at: new Date().toISOString(),
+      },
+      include: {
+        access_level: true,
+      },
+    })
+    res.json({
+      id: updated_user.id,
+      username: updated_user.username,
+      email: updated_user.email,
+      access_level: updated_user.access_level,
+      first_name: updated_user.first_name,
+      last_name: updated_user.last_name,
+      image_path: updated_user.image_path,
+      access_level: updated_user.access_level,
+      updated_at: updated_user.updated_at,
+      token: generateToken(updated_user.id),
+    })
+  } else {
+    res.status(401).json({ message: 'User not found' })
+  }
+})
+
+export { authUser, getUserProfile, registerUser, updateUserProfile }

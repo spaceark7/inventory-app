@@ -7,6 +7,7 @@ import SalesOrder from './SalesOrder'
 import WelcomeScreen from './WelcomeScreen'
 import { useDispatch, useSelector } from 'react-redux'
 import { logout } from '../redux/action/userAction'
+import UserEdit from './UserEdit'
 
 const HomePage = () => {
   const dispatch = useDispatch()
@@ -18,14 +19,21 @@ const HomePage = () => {
     dispatch(logout())
   }
 
+  const userDetail = useSelector((state) => state.userDetail)
+  const { loading, error, user } = userDetail
+
   const userLogin = useSelector((state) => state.userLogin)
   const { userInfo } = userLogin
 
   useEffect(() => {
     if (!userInfo) {
+      if (error) {
+        dispatch(logout())
+      }
+
       navigate('/login')
     }
-  }, [navigate, userInfo])
+  }, [dispatch, navigate, userInfo, error])
 
   return (
     <div className='flex'>
@@ -82,6 +90,7 @@ const HomePage = () => {
           <Route path='/' element={<WelcomeScreen />} />
           <Route path='dashboard' element={<Dashboard />} />
           <Route path='product' element={<Product />} />
+          <Route path='user-edit/:id' element={<UserEdit />} />
           <Route path='sales-order' element={<SalesOrder />} />
         </Routes>
       </div>
