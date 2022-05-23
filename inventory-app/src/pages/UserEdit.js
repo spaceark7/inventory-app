@@ -122,6 +122,8 @@ const UserEdit = () => {
             </div>
           </div>
         </div>
+      ) : error ? (
+        'error'
       ) : (
         <div className='py-4 px-4 mt-4 w-fit '>
           <div className='flex flex-row bg-white pt-4 pb-6 pr-8 rounded-lg shadow-md'>
