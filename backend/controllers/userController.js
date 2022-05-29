@@ -139,6 +139,9 @@ const getUserProfile = asyncHandler(async (req, res) => {
   }
 })
 
+// @desc    PUT update user & authenticate user
+// @route   GET /api/users/profile
+// @access  private
 const updateUserProfile = asyncHandler(async (req, res) => {
   const salt = await bcrypt.genSalt(10)
   console.log(req.body)
@@ -151,6 +154,10 @@ const updateUserProfile = asyncHandler(async (req, res) => {
     },
   })
 
+  if (req.body.password) {
+    req.body.password = await bcrypt.hash(req.body.password, salt)
+  }
+
   if (user_data) {
     const updated_user = await user.update({
       where: {
@@ -161,7 +168,7 @@ const updateUserProfile = asyncHandler(async (req, res) => {
         first_name: req.body.first_name || user_data.first_name,
         last_name: req.body.last_name || user_data.last_name,
         image_path: req.body.image_path || user_data.image_path,
-        password: user_data.password || req.body.password,
+        password: req.body.password || user_data.password,
         access_level: {
           set:
             req.body.access_level ||
@@ -179,7 +186,6 @@ const updateUserProfile = asyncHandler(async (req, res) => {
       id: updated_user.id,
       username: updated_user.username,
       email: updated_user.email,
-      access_level: updated_user.access_level,
       first_name: updated_user.first_name,
       last_name: updated_user.last_name,
       image_path: updated_user.image_path,
