@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import Breadcrumb from '../components/Breadcrumb'
@@ -6,9 +6,13 @@ import { getUserDetail, updateUserDetail } from '../redux/action/userAction'
 import { USER_UPDATE_RESET } from '../redux/constant'
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
+import axios from 'axios'
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 const UserEdit = () => {
   const { id } = useParams()
+  const parentRef = useRef()
   const [username, setUsername] = useState('')
   const [email, setEmail] = useState('')
   const [first_name, setFirstName] = useState('')
@@ -18,6 +22,7 @@ const UserEdit = () => {
   const [confirmPassword, setConfirmPassword] = useState('')
   const [access_level, setAccessLevel] = useState([])
   const [passwordToggle, setPasswordToggle] = useState(false)
+  const [uploading, setUploading] = useState(false)
 
   const dispatch = useDispatch()
 
@@ -41,6 +46,30 @@ const UserEdit = () => {
     )
   }
 
+  const handleUpload = async (e) => {
+    const image = e.target.files[0]
+    setImagepath(URL.createObjectURL(image))
+
+    const formData = new FormData()
+    formData.append('image', image)
+    setUploading(true)
+
+    try {
+      const config = {
+        headers: {
+          'Content-type': 'multipart/form-data',
+        },
+      }
+
+      const { data } = await axios.post('/api/uploads', formData, config)
+      setImagepath(data)
+      setUploading(false)
+    } catch (error) {
+      console.error(error)
+      setUploading(false)
+    }
+  }
+
   useEffect(() => {
     if (!user || !user.username || success) {
       dispatch({ type: USER_UPDATE_RESET })
@@ -56,7 +85,8 @@ const UserEdit = () => {
   }, [dispatch, success, id, user])
 
   return (
-    <>
+    <div ref={parentRef}>
+      <ToastContainer />
       <Breadcrumb pageName={'Edit Profile'} />
       {loading ? (
         <div className='py-4 px-4 mt-4 max-w-screen-lg '>
@@ -127,15 +157,24 @@ const UserEdit = () => {
       ) : (
         <div className='py-4 px-4 mt-4 w-fit '>
           <div className='flex flex-row bg-white pt-4 pb-6 pr-8 rounded-lg shadow-md'>
-            <div className='profile-image relative max-w-xs h-full py-4 px-6 mt-4 '>
-              <img className='h-full' src='/images/avatar.png' alt='' />
-              <input
-                type='file'
-                accept='image/*'
-                name='image_upload'
-                id='image_upload'
-                className='mt-2 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file: font-medium file:bg-secondary-blue/20 file:text-primary-blue'
+            <div className='profile-image relative max-w-xs h-full rounded-full py-4 px-6 mt-4 '>
+              <img
+                className='w-64 h-64 object-cover object-center rounded-full'
+                src={image_path}
+                alt={`profile of ${username}`}
               />
+              {uploading ? (
+                'Sedang upload'
+              ) : (
+                <input
+                  type='file'
+                  accept='image/*'
+                  name='image_upload'
+                  id='image_upload'
+                  onChange={handleUpload}
+                  className='mt-2 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file: font-medium file:bg-secondary-blue/20 file:text-primary-blue'
+                />
+              )}
             </div>
             <div className='w-full pl-6 py-4'>
               <h2 className='font-bold text-xl text-slate-600 mb-4'>
@@ -259,8 +298,14 @@ const UserEdit = () => {
                 </div>
                 <div className='flex justify-end mt-6'>
                   <button
+                    onClick={() => {
+                      parentRef.current.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start',
+                      })
+                    }}
                     disabled={password !== confirmPassword}
-                    className='bg-primary-blue px-4 py-3 rounded-md disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium uppercase'
+                    className='bg-primary-blue px-4 py-3 disabled:bg-primary-blue/50 disabled:cursor-not-allowed rounded-md disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium uppercase'
                   >
                     Update Profile
                   </button>
@@ -271,7 +316,7 @@ const UserEdit = () => {
         </div>
       )}
       {error && 'error'}
-    </>
+    </div>
   )
 }
 

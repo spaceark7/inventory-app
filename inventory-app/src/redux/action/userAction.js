@@ -12,6 +12,7 @@ import {
   USER_UPDATE_SUCCESS,
 } from '../constant'
 import axios from 'axios'
+import { toast } from 'react-toastify'
 
 export const login = (email, password) => async (dispatch) => {
   try {
@@ -77,7 +78,6 @@ export const getUserDetail = (id) => async (dispatch, getState) => {
     }
 
     const { data } = await axios.get(`/api/users/${id}`, config)
-    console.log('from get user: ', data)
 
     dispatch({
       type: USER_DETAIL_SUCCESS,
@@ -116,7 +116,14 @@ export const updateUserDetail = (user) => async (dispatch, getState) => {
     }
 
     const { data } = await axios.put(`/api/users/profile`, user, config)
-    console.log('from get user: ' + data)
+    toast.success('Update Profile Berhasil', {
+      position: 'top-right',
+      autoClose: 3000,
+      hideProgressBar: true,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: false,
+    })
 
     dispatch({
       type: USER_UPDATE_SUCCESS,
@@ -128,6 +135,14 @@ export const updateUserDetail = (user) => async (dispatch, getState) => {
     })
     localStorage.setItem('userInfo', JSON.stringify(data))
   } catch (error) {
+    toast.error(error.message, {
+      position: 'top-right',
+      autoClose: 2000,
+      hideProgressBar: true,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: false,
+    })
     const message =
       error.response && error.response.data.message
         ? error.response.data.message

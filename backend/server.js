@@ -3,6 +3,7 @@ import express from 'express'
 import dotenv from 'dotenv'
 import ProductRoutes from './routes/ProductRoutes.js'
 import userRoutes from './routes/userRoutes.js'
+import uploadRoutes from './routes/uploadRoutes.js'
 import { errorHandler, notFound } from './middleware/errorHandlers.js'
 
 dotenv.config()
@@ -16,9 +17,11 @@ app.get('/', (req, res) => {
 
 app.use('/api/products', ProductRoutes)
 app.use('/api/users', userRoutes)
+app.use('/api/uploads', uploadRoutes)
 
 const __dirname = path.resolve()
-//Upload image route
+
+//Making static folder
 app.use('/uploads', express.static(path.join(__dirname, '/uploads')))
 
 // Middleware to handle errors

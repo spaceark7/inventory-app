@@ -5,16 +5,13 @@ import { Link, useLocation, useNavigate } from 'react-router-dom'
 import Breadcrumb from '../components/Breadcrumb'
 import { getUserDetail } from '../redux/action/userAction'
 import Clock from 'react-live-clock'
-import {
-  PencilAltIcon,
-  PresentationChartLineIcon,
-} from '@heroicons/react/outline'
+import { PencilAltIcon } from '@heroicons/react/outline'
 import InsightCard from '../components/InsightCard'
 
 const WelcomeScreen = () => {
   const location = useLocation()
   const navigate = useNavigate()
-  const path = location.pathname.split('/')
+
   const [timezone, setTimeZone] = useState('')
   const [access, setAccess] = useState([])
 
@@ -25,7 +22,7 @@ const WelcomeScreen = () => {
   const userDetail = useSelector((state) => state.userDetail)
   const { loading, error, user } = userDetail
 
-  const date = new Date().toLocaleString()
+  const date = new Date().toISOString()
 
   useEffect(() => {
     let tz = Intl.DateTimeFormat().resolvedOptions().timeZone
