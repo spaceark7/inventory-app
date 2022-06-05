@@ -51,9 +51,10 @@ const UserEdit = () => {
   const handleUpload = async (e) => {
     const image = e.target.files[0]
     setImagepath(URL.createObjectURL(image))
-
+    console.log(e.target)
     const formData = new FormData()
     formData.append('image', image)
+    console.log(formData)
     setUploading(true)
 
     try {
@@ -173,18 +174,15 @@ const UserEdit = () => {
                 src={image_path}
                 alt={`profile of ${username}`}
               />
-              {uploading ? (
-                'Sedang upload'
-              ) : (
-                <input
-                  type='file'
-                  accept='image/*'
-                  name='image_upload'
-                  id='image_upload'
-                  onChange={handleUpload}
-                  className='mt-2 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file: font-medium file:bg-secondary-blue/20 file:text-primary-blue'
-                />
-              )}
+
+              <input
+                type='file'
+                accept='image/*'
+                name='image_upload'
+                onChange={handleUpload}
+                id='image_upload'
+                className='mt-2 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file: font-medium file:bg-secondary-blue/20 file:text-primary-blue'
+              />
             </div>
             <div className='w-full pl-6 py-4'>
               <h2 className='font-bold text-xl text-slate-600 mb-4'>
