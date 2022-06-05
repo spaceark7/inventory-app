@@ -1,3 +1,4 @@
+import path from 'path'
 import express from 'express'
 import dotenv from 'dotenv'
 import ProductRoutes from './routes/ProductRoutes.js'
@@ -15,6 +16,10 @@ app.get('/', (req, res) => {
 
 app.use('/api/products', ProductRoutes)
 app.use('/api/users', userRoutes)
+
+const __dirname = path.resolve()
+//Upload image route
+app.use('/uploads', express.static(path.join(__dirname, '/uploads')))
 
 // Middleware to handle errors
 app.use(notFound)

@@ -27,11 +27,10 @@ const HomePage = () => {
 
   useEffect(() => {
     if (!userInfo) {
-      if (error) {
-        dispatch(logout())
-      }
-
       navigate('/login')
+    }
+    if (error) {
+      dispatch(logout())
     }
   }, [dispatch, navigate, userInfo, error])
 
