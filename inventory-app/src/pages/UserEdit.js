@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import Breadcrumb from '../components/Breadcrumb'
 import { getUserDetail, updateUserDetail } from '../redux/action/userAction'
 import { USER_UPDATE_RESET } from '../redux/constant'
@@ -9,10 +9,12 @@ import 'react-loading-skeleton/dist/skeleton.css'
 import axios from 'axios'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+import { ArrowLeftIcon } from '@heroicons/react/outline'
 
 const UserEdit = () => {
   const { id } = useParams()
   const parentRef = useRef()
+  const navigate = useNavigate()
   const [username, setUsername] = useState('')
   const [email, setEmail] = useState('')
   const [first_name, setFirstName] = useState('')
@@ -88,8 +90,16 @@ const UserEdit = () => {
     <div ref={parentRef}>
       <ToastContainer />
       <Breadcrumb pageName={'Edit Profile'} />
+      <div
+        className='inline-flex items-center text-sm ml-4 p-2 mt-2 cursor-pointer rounded-md  hover:bg-gray-200'
+        onClick={() => {
+          navigate('/')
+        }}
+      >
+        <ArrowLeftIcon className='mr-2 w-4 h-4' /> Kembali
+      </div>
       {loading ? (
-        <div className='py-4 px-4 mt-4 max-w-screen-lg '>
+        <div className='py-2 px-4 max-w-screen-lg '>
           <div className='flex flex-row bg-white pt-4 pb-6 pr-8 rounded-lg shadow-md'>
             <div className='profile-image relative rounded-full  h-full py-4 px-6 mt-4 '>
               <div className='h-64 w-64 rounded-full  '>
@@ -155,7 +165,7 @@ const UserEdit = () => {
       ) : error ? (
         'error'
       ) : (
-        <div className='py-4 px-4 mt-4 w-fit '>
+        <div className='py-2 px-4  w-fit '>
           <div className='flex flex-row bg-white pt-4 pb-6 pr-8 rounded-lg shadow-md'>
             <div className='profile-image relative max-w-xs h-full rounded-full py-4 px-6 mt-4 '>
               <img
