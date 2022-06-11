@@ -12,11 +12,15 @@ model product {
   product_name  String   @unique(map: "Product_product_name_key") @db.VarChar(255)
   product_SN    String   @unique(map: "Product_product_SN_key") @db.VarChar(255)
   product_image String   @db.VarChar(255)
+  brand String?   @db.VarChar(255) @default("")
+  model String?   @db.VarChar(255) @default("")
   SKU           String   @db.VarChar(255)
   specification String   @db.VarChar(255)
   price         Int
   product_type  String   @db.VarChar(255)
-  status        Boolean
+  status        Boolean  @default(true)
+  deleted       Boolean @default(false)
+  deleted_at    DateTime?
   created_at    DateTime @default(now())
   updated_at    DateTime @updatedAt
  

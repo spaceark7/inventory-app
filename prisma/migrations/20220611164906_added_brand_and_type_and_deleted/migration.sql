@@ -1,0 +1,6 @@
+-- AlterTable
+ALTER TABLE `product` ADD COLUMN `brand` VARCHAR(255) NOT NULL DEFAULT '',
+    ADD COLUMN `deleted` BOOLEAN NOT NULL DEFAULT false,
+    ADD COLUMN `deleted_at` DATETIME(3) NULL,
+    ADD COLUMN `model` VARCHAR(255) NOT NULL DEFAULT '',
+    MODIFY `status` BOOLEAN NOT NULL DEFAULT true;

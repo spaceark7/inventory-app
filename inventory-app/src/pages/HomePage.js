@@ -84,7 +84,7 @@ const HomePage = () => {
           </div>
         </div>
       </nav>
-      <div className='w-full h-screen overflow-y-auto pb-12'>
+      <div className='w-full max-h-screen overflow-y-auto scrollbar '>
         <Routes>
           <Route path='/' element={<WelcomeScreen />} />
           <Route path='dashboard' element={<Dashboard />} />

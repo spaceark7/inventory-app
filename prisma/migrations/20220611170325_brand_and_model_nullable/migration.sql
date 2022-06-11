@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE `product` MODIFY `brand` VARCHAR(255) NULL DEFAULT '',
+    MODIFY `model` VARCHAR(255) NULL DEFAULT '';
