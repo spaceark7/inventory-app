@@ -50,7 +50,7 @@ const WelcomeScreen = () => {
           <Breadcrumb pageName={'Welcome Page'} />
           <div className='px-4'>
             <div className='grid grid-flow-row space-y-4 mt-4 py-4 auto-rows-min'>
-              <div className='user-banner h-min flex flex-row'>
+              <div className='user-banner h-min flex flex-row items-stretch'>
                 <div className='w-2/3 bg-gradient-to-r w-full from-primary-blue to-secondary-blue text-white rounded-md px-6 pt-6 flex shadow-lg'>
                   <div className='w-1/2 pt-2'>
                     <h2 className='text-5xl font-body'>
@@ -90,9 +90,9 @@ const WelcomeScreen = () => {
                       </div>
                     </div>
                   </div>
-                  <div className='w-1/2 h-full relative'>
+                  <div className='w-1/2 relative flex items-end'>
                     <img
-                      className=' h-full'
+                      className='object-bottom w-full'
                       src='/images/welcome_character.png'
                       alt='welcome 3d illustration'
                     />

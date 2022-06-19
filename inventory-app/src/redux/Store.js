@@ -1,6 +1,10 @@
 import { configureStore } from '@reduxjs/toolkit'
 import thunk from 'redux-thunk'
-import { productListReducer } from './reducer/productReducers'
+import {
+  productDeleteReducer,
+  productDetailReducer,
+  productListReducer,
+} from './reducer/productReducers'
 import {
   userDetailReducer,
   userLoginReducer,
@@ -23,6 +27,8 @@ const store = configureStore({
     userDetail: userDetailReducer,
     userUpdate: userUpdateReducer,
     productList: productListReducer,
+    productDetail: productDetailReducer,
+    productDelete: productDeleteReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(...middleware),

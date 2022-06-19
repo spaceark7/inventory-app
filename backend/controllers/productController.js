@@ -9,7 +9,12 @@ const { product } = new PrismaClient()
 
 const getProducts = asyncHandler(async (req, res) => {
   try {
-    const products_data = await product.findMany()
+    const products_data = await product.findMany({
+      where: {
+        deleted: false,
+      },
+    })
+
     res.json(products_data)
   } catch (error) {
     res.status(404).json({ message: `${error.message}` })
@@ -29,7 +34,7 @@ const getProductById = asyncHandler(async (req, res) => {
     })
 
     if (product_data.length > 0) {
-      res.json(product_data)
+      res.json(product_data[0])
     } else {
       res.status(404)
       throw new Error('No product found with that ID')
@@ -68,7 +73,7 @@ const createProduct = asyncHandler(async (req, res) => {
 // @access  Private/only for user
 
 const updateProductById = asyncHandler(async (req, res) => {
-  // const data = JSON.parse(req.body.data)
+  console.log(req.body)
   const {
     id,
     product_name,
@@ -79,25 +84,36 @@ const updateProductById = asyncHandler(async (req, res) => {
     price,
     SKU,
     specification,
+    deleted,
+    deleted_at,
   } = req.body
 
   try {
-    const product_data = await product.update({
+    const product_data = await product.findMany({
       where: {
-        id: parseInt(req.params.id),
-      },
-      data: {
-        product_name: product_name,
-        SKU: SKU,
-        price: price,
-        specification: specification,
-        product_SN: product_SN,
-        product_image: product_image,
-        product_type: product_type,
-        status: status,
+        id: parseInt(id),
       },
     })
-    res.status(201).json(product_data)
+
+    const updated_data = await product.update({
+      where: {
+        id: parseInt(id),
+      },
+      data: {
+        product_name: product_name || product_data.product_name,
+        SKU: SKU || product_data.SKU,
+        price: price || product_data.price,
+        specification: specification || product_data.specification,
+        product_SN: product_SN || product_data.product_SN,
+        product_image: product_image || product_data.product_image,
+        product_type: product_type || product_data.product_type,
+        status: status || product_data.status,
+        deleted: deleted || product_data.deleted,
+        deleted_at: deleted ? deleted_at : product_data.deleted_at,
+        updated_at: new Date(),
+      },
+    })
+    res.status(201).json(updated_data)
   } catch (error) {
     res.status(500).json({ msg: `error : ${error}` })
     console.log(error)
