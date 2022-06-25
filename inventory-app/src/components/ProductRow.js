@@ -1,20 +1,14 @@
 import NumberFormat from 'react-number-format'
 import { PencilAltIcon, XIcon } from '@heroicons/react/outline'
-import { deleteProduct, listProducts } from '../redux/action/productAction'
-import { useDispatch } from 'react-redux'
 
-import Modal from './Modal'
 import { Link } from 'react-router-dom'
 
 export default function ProductRow({
   product,
   openModal,
-  closeModal,
-  isOpen,
+
   setProduct,
 }) {
-  const dispatch = useDispatch()
-
   const handleModal = (product) => {
     openModal()
     setProduct(product)

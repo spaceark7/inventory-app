@@ -49,9 +49,13 @@ const Modal = ({ isOpen, closeModal, product, handleAction }) => {
                   </Dialog.Title>
                   <div className='mt-2'>
                     <Dialog.Description>
-                      Produk{' '}
-                      <span className='font-bold'>{product.product_name}</span>{' '}
-                      akan dihapus.
+                      <span className='font-bold mb-2'>
+                        {product.product_name}
+                      </span>
+                      <br />
+                      <span className='text-sm'>
+                        Produk akan dihapus. Anda yakin?
+                      </span>
                     </Dialog.Description>
                   </div>
 

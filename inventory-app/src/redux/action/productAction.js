@@ -54,7 +54,7 @@ export const getProductDetail = (id) => async (dispatch, getState) => {
     }
 
     const { data } = await axios.get(`/api/products/${id}`, config)
-
+    console.log('from action detail: ', data)
     dispatch({
       type: PRODUCT_DETAIL_SUCCESS,
       payload: data,
@@ -76,6 +76,7 @@ export const getProductDetail = (id) => async (dispatch, getState) => {
 
 export const deleteProduct = (id) => async (dispatch, getState) => {
   console.log(new Date())
+  console.log(window.location.href)
   try {
     dispatch({
       type: PRODUCT_DELETE_REQUEST,
@@ -93,24 +94,32 @@ export const deleteProduct = (id) => async (dispatch, getState) => {
     }
 
     const { data } = await axios.put(
-      `api/products/${id}`,
+      `/api/products/${id}`,
       { id: id, deleted: true, deleted_at: new Date() },
       config
     )
+
+    console.log('from delete: ', data)
 
     dispatch({
       type: PRODUCT_DELETE_SUCCESS,
     })
 
-    toast.error(`${data.product_name} berhasil dihapus`, {
-      position: 'top-right',
-      autoClose: 3000,
-      hideProgressBar: true,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: false,
-      icon: <TrashIcon className='w-8 h-8 text-red-600' />,
-    })
+    toast.error(
+      <>
+        <p className='text-sm'>{`${data.product_name}.`}</p>
+        <p className='text-sm'>Telah dihapus</p>
+      </>,
+      {
+        position: 'top-right',
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: false,
+        icon: <TrashIcon className='w-8 h-8 text-red-600' />,
+      }
+    )
   } catch (error) {
     const message =
       error.response && error.response.data.message
