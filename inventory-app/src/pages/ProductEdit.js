@@ -62,7 +62,7 @@ const ProductEdit = () => {
 
   const handleUpdate = (e) => {
     e.preventDefault()
-    console.log(status)
+
     dispatch(
       updateProduct({
         id: product.id,
@@ -84,10 +84,10 @@ const ProductEdit = () => {
   const handleUpload = async (e) => {
     const image = e.target.files[0]
     setImagepath(URL.createObjectURL(image))
-    console.log(e.target)
+
     const formData = new FormData()
     formData.append('image', image)
-    console.log(formData)
+
     setUploading(true)
 
     try {
@@ -97,11 +97,15 @@ const ProductEdit = () => {
         },
       }
 
-      const { data } = await axios.post('/api/uploads', formData, config)
+      const { data } = await axios.post(
+        '/api/uploads/product',
+        formData,
+        config
+      )
+      console.log('respone upload : ', data)
       setImagepath(data)
       setUploading(false)
     } catch (error) {
-      console.error(error)
       setUploading(false)
     }
   }
@@ -253,13 +257,15 @@ const ProductEdit = () => {
       ) : (
         <div className='w-full py-2 px-4 lg:max-w-screen-lg'>
           <div className='flex flex-row rounded-lg bg-white pt-4 pb-6 pr-8 shadow-md'>
-            <div className='profile-image relative mt-4  max-w-xs rounded-full py-4 px-6 lg:h-64 '>
-              <img
-                lazyload
-                className='rounded-full object-cover object-fill object-center'
-                src={image_path}
-                alt={`profile of ${productName}`}
-              />
+            <div className='profile-image relative mt-4 max-h-64 max-w-xs rounded-full py-4 px-6 lg:h-64 '>
+              <div className='max-w-ws relative max-h-64'>
+                <img
+                  lazyload
+                  className='aspect-[4/3] w-full rounded-md object-contain object-center'
+                  src={image_path}
+                  alt={`profile of ${productName}`}
+                />
+              </div>
 
               <input
                 type='file'

@@ -4,9 +4,23 @@ import multer from 'multer'
 
 const router = express.Router()
 
+const productImageStorage = multer.diskStorage({
+  destination(req, file, cb) {
+    cb(null, 'uploads/product/')
+  },
+  filename(req, file, cb) {
+    cb(
+      null,
+      `${path.parse(file.originalname).name}-${Date.now()}${path.extname(
+        file.originalname
+      )}`
+    )
+  },
+})
+
 const storage = multer.diskStorage({
   destination(req, file, cb) {
-    cb(null, 'uploads/')
+    cb(null, 'uploads/user/')
   },
   filename(req, file, cb) {
     cb(
@@ -37,7 +51,18 @@ const upload = multer({
   },
 })
 
+const uploadProductImage = multer({
+  storage: productImageStorage,
+  fileFilter: (req, file, cb) => {
+    checkFileType(file, cb)
+  },
+})
+
 router.post('/', upload.single('image'), (req, res) => {
+  res.send(`/${req.file.path}`)
+})
+
+router.post('/product', uploadProductImage.single('image'), (req, res) => {
   res.send(`/${req.file.path}`)
 })
 

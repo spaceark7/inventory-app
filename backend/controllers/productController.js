@@ -76,7 +76,6 @@ const createProduct = asyncHandler(async (req, res) => {
 // @access  Private/only for user
 
 const updateProductById = asyncHandler(async (req, res) => {
-  console.log(req.body)
   const d = moment.tz('Asia/Jakarta').format()
   const {
     id,
@@ -118,8 +117,6 @@ const updateProductById = asyncHandler(async (req, res) => {
         updated_at: d,
       },
     })
-
-    console.log(updated_data.updated_at)
 
     res.status(201).json(updated_data)
   } catch (error) {
