@@ -35,6 +35,9 @@ const Product = () => {
   const productList = useSelector((state) => state.productList)
   const { loading, products, error } = productList
 
+  const productDelete = useSelector((state) => state.productDelete)
+  const { loading: loadingDelete } = productDelete
+
   useEffect(() => {
     dispatch(listProducts())
   }, [dispatch])
@@ -47,44 +50,45 @@ const Product = () => {
         closeModal={closeModal}
         product={selectedProduct}
         handleAction={handleDelete}
+        loading={loadingDelete}
       />
       <Breadcrumb className='z-20' pageName={'Products Page'} />
       {loading ? (
         <>
-          <div className='text-sm ml-4 p-2 mt-2 w-20 cursor-pointer rounded-md  hover:bg-gray-200'>
+          <div className='ml-4 mt-2 w-20 cursor-pointer rounded-md p-2 text-sm  hover:bg-gray-200'>
             <Skeleton className='h-8 ' />
           </div>
-          <div className='py-4 px-4 w-full'>
-            <div className='bg-white min-h-screen pt-4 pb-6 px-4 rounded-lg shadow-md'>
+          <div className='w-full py-4 px-4'>
+            <div className='min-h-screen rounded-lg bg-white px-4 pt-4 pb-6 shadow-md'>
               <Skeleton />
-              <div className='relative rounded-xl bg-gray-50 bg-opacity-75 border border-slate shadow-sm'>
-                <div className='max-h-[80vh] mt-4 pb-8 bg-gray-50 bg-opacity-75 overflow-auto scrollbar'>
-                  <table className='table-auto w-full border-collapse text-sm px-4'>
+              <div className='border-slate relative rounded-xl border bg-gray-50 bg-opacity-75 shadow-sm'>
+                <div className='scrollbar mt-4 max-h-[80vh] overflow-auto bg-gray-50 bg-opacity-75 pb-8'>
+                  <table className='w-full table-auto border-collapse px-4 text-sm'>
                     <thead ame='z-10'>
                       <tr>
-                        <th className='border-b  sticky top-0 bg-gray-50 backdrop-blur bg-opacity-75 z-10 px-4 pb-2 text-left max-w-md border-slate-400 text-slate-500'>
+                        <th className='sticky  top-0 z-10 max-w-md border-b border-slate-400 bg-gray-50 bg-opacity-75 px-4 pb-2 text-left text-slate-500 backdrop-blur'>
                           <Skeleton />
                         </th>
 
-                        <th className='border-b sticky top-0 bg-gray-50 backdrop-blur bg-opacity-75 z-10 px-4 pb-2 text-left  border-slate-400 text-slate-500'>
+                        <th className='sticky top-0 z-10 border-b border-slate-400 bg-gray-50 bg-opacity-75 px-4 pb-2 text-left  text-slate-500 backdrop-blur'>
                           <Skeleton />
                         </th>
-                        <th className='border-b sticky top-0 bg-gray-50 backdrop-blur bg-opacity-75 z-10 px-4 pb-2 text-left  border-slate-400 text-slate-500'>
+                        <th className='sticky top-0 z-10 border-b border-slate-400 bg-gray-50 bg-opacity-75 px-4 pb-2 text-left  text-slate-500 backdrop-blur'>
                           <Skeleton />
                         </th>
-                        <th className='border-b sticky top-0 bg-gray-50 backdrop-blur bg-opacity-75 z-10 px-4 pb-2 text-left  border-slate-400 text-slate-500'>
+                        <th className='sticky top-0 z-10 border-b border-slate-400 bg-gray-50 bg-opacity-75 px-4 pb-2 text-left  text-slate-500 backdrop-blur'>
                           <Skeleton />
                         </th>
-                        <th className='border-b sticky top-0 bg-gray-50 backdrop-blur bg-opacity-75 z-10 px-4 pb-2 text-left  border-slate-400 text-slate-500'>
+                        <th className='sticky top-0 z-10 border-b border-slate-400 bg-gray-50 bg-opacity-75 px-4 pb-2 text-left  text-slate-500 backdrop-blur'>
                           <Skeleton />
                         </th>
-                        <th className='border-b sticky top-0 bg-gray-50 backdrop-blur min-w-fit bg-opacity-75 z-10 px-4 pb-2 text-left  border-slate-400 text-slate-500'>
+                        <th className='sticky top-0 z-10 min-w-fit border-b border-slate-400 bg-gray-50 bg-opacity-75 px-4 pb-2 text-left  text-slate-500 backdrop-blur'>
                           <Skeleton />
                         </th>
-                        <th className='border-b sticky top-0 bg-gray-50 backdrop-blur bg-opacity-75 z-10 px-4 pb-2 text-left  border-slate-400 text-slate-500'>
+                        <th className='sticky top-0 z-10 border-b border-slate-400 bg-gray-50 bg-opacity-75 px-4 pb-2 text-left  text-slate-500 backdrop-blur'>
                           <Skeleton />
                         </th>
-                        <th className='border-b text-center sticky top-0 bg-gray-50 backdrop-blur bg-opacity-75 z-10 px-4 pb-2 text-left  border-slate-400 text-slate-500'>
+                        <th className='sticky top-0 z-10 border-b border-slate-400 bg-gray-50 bg-opacity-75 px-4 pb-2 text-left text-center  text-slate-500 backdrop-blur'>
                           <Skeleton />
                         </th>
                       </tr>
@@ -112,15 +116,15 @@ const Product = () => {
       ) : (
         <>
           <div
-            className='inline-flex items-center text-sm ml-4 p-2 mt-2 cursor-pointer rounded-md  hover:bg-gray-200'
+            className='ml-4 mt-2 inline-flex cursor-pointer items-center rounded-md p-2 text-sm  hover:bg-gray-200'
             onClick={() => {
               navigate(-1)
             }}
           >
-            <ArrowLeftIcon className='mr-2 w-4 h-4' /> Kembali
+            <ArrowLeftIcon className='mr-2 h-4 w-4' /> Kembali
           </div>
-          <div className='py-4 px-4 w-full'>
-            <div className='bg-white min-h-screen pt-4 pb-6 px-4 rounded-lg shadow-md'>
+          <div className='w-full py-4 px-4'>
+            <div className='min-h-screen rounded-lg bg-white px-4 pt-4 pb-6 shadow-md'>
               {products ? (
                 <h4 className='font-body text-slate-700'>
                   Jumlah produk : {products.length}
@@ -128,34 +132,34 @@ const Product = () => {
               ) : (
                 'error'
               )}
-              <div className='relative rounded-xl bg-gray-50 bg-opacity-75 border border-slate shadow-sm'>
-                <div className='max-h-[80vh] mt-4 pb-8 bg-gray-50 bg-opacity-75 overflow-auto scrollbar'>
-                  <table className='table-auto w-full border-collapse text-sm px-4'>
+              <div className='border-slate relative rounded-xl border bg-gray-50 bg-opacity-75 shadow-sm'>
+                <div className='scrollbar mt-4 max-h-[80vh] overflow-auto bg-gray-50 bg-opacity-75 pb-8'>
+                  <table className='w-full table-auto border-collapse px-4 text-sm'>
                     <thead ame='z-10'>
                       <tr>
-                        <th className='border-b  sticky top-0 bg-gray-50 backdrop-blur bg-opacity-75 z-10 px-4 pb-2 text-left max-w-md border-slate-400 text-slate-500'>
+                        <th className='sticky  top-0 z-10 max-w-md border-b border-slate-400 bg-gray-50 bg-opacity-75 px-4 pb-2 text-left text-slate-500 backdrop-blur'>
                           Nama Produk
                         </th>
 
-                        <th className='border-b sticky top-0 bg-gray-50 backdrop-blur bg-opacity-75 z-10 px-4 pb-2 text-left  border-slate-400 text-slate-500'>
+                        <th className='sticky top-0 z-10 border-b border-slate-400 bg-gray-50 bg-opacity-75 px-4 pb-2 text-left  text-slate-500 backdrop-blur'>
                           Merk
                         </th>
-                        <th className='border-b sticky top-0 bg-gray-50 backdrop-blur bg-opacity-75 z-10 px-4 pb-2 text-left  border-slate-400 text-slate-500'>
+                        <th className='sticky top-0 z-10 border-b border-slate-400 bg-gray-50 bg-opacity-75 px-4 pb-2 text-left  text-slate-500 backdrop-blur'>
                           Model
                         </th>
-                        <th className='border-b sticky top-0 bg-gray-50 backdrop-blur bg-opacity-75 z-10 px-4 pb-2 text-left  border-slate-400 text-slate-500'>
+                        <th className='sticky top-0 z-10 border-b border-slate-400 bg-gray-50 bg-opacity-75 px-4 pb-2 text-left  text-slate-500 backdrop-blur'>
                           Spesifikasi
                         </th>
-                        <th className='border-b sticky top-0 bg-gray-50 backdrop-blur bg-opacity-75 z-10 px-4 pb-2 text-left  border-slate-400 text-slate-500'>
-                          Tipe Produk
+                        <th className='sticky top-0 z-10 w-fit border-b border-slate-400 bg-gray-50 bg-opacity-75 px-4 pb-2 text-left  text-slate-500 backdrop-blur'>
+                          Tipe
                         </th>
-                        <th className='border-b sticky top-0 bg-gray-50 backdrop-blur min-w-fit bg-opacity-75 z-10 px-4 pb-2 text-left  border-slate-400 text-slate-500'>
+                        <th className='sticky top-0 z-10 min-w-fit border-b border-slate-400 bg-gray-50 bg-opacity-75 px-4 pb-2 text-left  text-slate-500 backdrop-blur'>
                           Harga
                         </th>
-                        <th className='border-b sticky top-0 bg-gray-50 backdrop-blur bg-opacity-75 z-10 px-4 pb-2 text-left  border-slate-400 text-slate-500'>
+                        <th className='sticky top-0 z-10 w-fit border-b border-slate-400 bg-gray-50 bg-opacity-75 px-4 pb-2 text-left  text-slate-500 backdrop-blur'>
                           Status
                         </th>
-                        <th className='border-b text-center sticky top-0 bg-gray-50 backdrop-blur bg-opacity-75 z-10 px-4 pb-2 text-left  border-slate-400 text-slate-500'>
+                        <th className='sticky top-0 z-10 border-b border-slate-400 bg-gray-50 bg-opacity-75 px-4 pb-2 text-left text-center  text-slate-500 backdrop-blur'>
                           Action
                         </th>
                       </tr>

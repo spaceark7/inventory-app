@@ -2,16 +2,15 @@ import React from 'react'
 
 const ErrorScreen = ({ error }) => {
   return (
-    <div className='w-full h-[80vh]'>
-      <div className='relative w-fit mx-auto'>
-        <img
-          className='max-h-[50vh] mx-auto mt-24'
-          src='/images/3d_female.webp'
-          alt=''
-        />
+    <div className='h-[80vh] w-full'>
+      <div className='relative mx-auto my-auto max-h-[80vh] w-fit'>
+        <div className='relative mx-auto w-56 '>
+          <img className='object-contain' src='/images/3d_female.webp' alt='' />
+        </div>
+
         <div className='text-center'>
           <h1 className=' text-4xl font-bold'>{error}</h1>
-          <p className='max-w-md mt-3'>
+          <p className='mt-3 max-w-md'>
             Silahkan muat ulang halaman. JIka masih terjadi masalah cek koneksi
             internet anda.
           </p>

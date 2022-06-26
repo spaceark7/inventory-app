@@ -11,6 +11,9 @@ import {
   PRODUCT_LIST_FAIL,
   PRODUCT_LIST_REQUEST,
   PRODUCT_LIST_SUCCESS,
+  PRODUCT_UPDATE_FAIL,
+  PRODUCT_UPDATE_REQUEST,
+  PRODUCT_UPDATE_SUCCESS,
 } from '../constant'
 import { logout } from './userAction'
 
@@ -54,7 +57,7 @@ export const getProductDetail = (id) => async (dispatch, getState) => {
     }
 
     const { data } = await axios.get(`/api/products/${id}`, config)
-    console.log('from action detail: ', data)
+
     dispatch({
       type: PRODUCT_DETAIL_SUCCESS,
       payload: data,
@@ -74,9 +77,66 @@ export const getProductDetail = (id) => async (dispatch, getState) => {
   }
 }
 
+export const updateProduct = (product) => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: PRODUCT_UPDATE_REQUEST,
+    })
+
+    const {
+      userLogin: { userInfo },
+    } = getState()
+
+    const config = {
+      headers: {
+        'CONTENT-TYPE': 'application/json',
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    }
+
+    const { data } = await axios.put(
+      `/api/products/${product.id}`,
+      product,
+      config
+    )
+
+    console.log('from delete: ', data)
+
+    dispatch({
+      type: PRODUCT_UPDATE_SUCCESS,
+      payload: data,
+    })
+
+    toast.success(
+      <>
+        <p className='text-sm'>Update produk berhasil</p>
+      </>,
+      {
+        position: 'top-right',
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: false,
+      }
+    )
+  } catch (error) {
+    const message =
+      error.response && error.response.data.message
+        ? error.response.data.message
+        : error.message
+    if (message === 'Invalid credentials') {
+      dispatch(logout())
+    }
+    dispatch({
+      type: PRODUCT_UPDATE_FAIL,
+      payload: message,
+    })
+  }
+}
+
 export const deleteProduct = (id) => async (dispatch, getState) => {
-  console.log(new Date())
-  console.log(window.location.href)
+  const date = new Date()
   try {
     dispatch({
       type: PRODUCT_DELETE_REQUEST,
@@ -94,12 +154,10 @@ export const deleteProduct = (id) => async (dispatch, getState) => {
     }
 
     const { data } = await axios.put(
-      `/api/products/${id}`,
-      { id: id, deleted: true, deleted_at: new Date() },
+      `/api/products/delete/${id}`,
+      { id: id, deleted: true, deleted_at: date },
       config
     )
-
-    console.log('from delete: ', data)
 
     dispatch({
       type: PRODUCT_DELETE_SUCCESS,
@@ -117,7 +175,7 @@ export const deleteProduct = (id) => async (dispatch, getState) => {
         closeOnClick: true,
         pauseOnHover: true,
         draggable: false,
-        icon: <TrashIcon className='w-8 h-8 text-red-600' />,
+        icon: <TrashIcon className='h-8 w-8 text-red-600' />,
       }
     )
   } catch (error) {

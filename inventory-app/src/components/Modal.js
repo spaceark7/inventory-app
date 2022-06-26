@@ -1,8 +1,8 @@
 import { Dialog, Transition } from '@headlessui/react'
 import { ExclamationIcon } from '@heroicons/react/outline'
-import { Fragment, useRef } from 'react'
+import { Fragment, useRef, useState } from 'react'
 
-const Modal = ({ isOpen, closeModal, product, handleAction }) => {
+const Modal = ({ isOpen, closeModal, product, handleAction, loading }) => {
   let deleteButtonRef = useRef(null)
 
   return (
@@ -43,13 +43,13 @@ const Modal = ({ isOpen, closeModal, product, handleAction }) => {
                     className='text-lg font-medium leading-6 text-gray-900'
                   >
                     <span className='inline-flex items-center'>
-                      <ExclamationIcon className='mr-2 w-6 h-6 text-red-600' />
+                      <ExclamationIcon className='mr-2 h-6 w-6 text-red-600' />
                       <h4>Hapus Produk</h4>
                     </span>
                   </Dialog.Title>
                   <div className='mt-2'>
                     <Dialog.Description>
-                      <span className='font-bold mb-2'>
+                      <span className='mb-2 font-bold'>
                         {product.product_name}
                       </span>
                       <br />
@@ -62,7 +62,7 @@ const Modal = ({ isOpen, closeModal, product, handleAction }) => {
                   <div className='mt-6 flex gap-x-4'>
                     <button
                       type='button'
-                      className='inline-flex justify-center rounded-md border border-transparent  px-4 py-2 text-sm font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 focus:outline-none  '
+                      className='inline-flex justify-center rounded-md border border-transparent  bg-gray-100 px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-200 focus:outline-none  '
                       onClick={closeModal}
                     >
                       Kembali
@@ -70,8 +70,11 @@ const Modal = ({ isOpen, closeModal, product, handleAction }) => {
                     <button
                       ref={deleteButtonRef}
                       type='button'
-                      className='inline-flex justify-center rounded-md border border-transparent bg-red-100 px-4 py-2 text-sm font-medium text-red-800 hover:bg-red-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2'
-                      onClick={() => handleAction(product.id)}
+                      disabled={loading}
+                      className='inline-flex justify-center rounded-md border border-transparent bg-red-100 px-4 py-2 text-sm font-medium text-red-800 hover:bg-red-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50'
+                      onClick={() => {
+                        handleAction(product.id)
+                      }}
                     >
                       Hapus Produk
                     </button>

@@ -1,6 +1,9 @@
 import asyncHandler from 'express-async-handler'
 import Prisma from '@prisma/client'
+import moment from 'moment-timezone'
+
 const { PrismaClient } = Prisma
+
 const { product } = new PrismaClient()
 
 // @desc    Get all products
@@ -74,6 +77,7 @@ const createProduct = asyncHandler(async (req, res) => {
 
 const updateProductById = asyncHandler(async (req, res) => {
   console.log(req.body)
+  const d = moment.tz('Asia/Jakarta').format()
   const {
     id,
     product_name,
@@ -81,11 +85,11 @@ const updateProductById = asyncHandler(async (req, res) => {
     product_type,
     product_SN,
     status,
+    brand,
+    model,
     price,
     SKU,
     specification,
-    deleted,
-    deleted_at,
   } = req.body
 
   try {
@@ -103,16 +107,53 @@ const updateProductById = asyncHandler(async (req, res) => {
         product_name: product_name || product_data.product_name,
         SKU: SKU || product_data.SKU,
         price: price || product_data.price,
+        brand: brand || product_data.brand,
+        model: model || product_data.model,
         specification: specification || product_data.specification,
         product_SN: product_SN || product_data.product_SN,
         product_image: product_image || product_data.product_image,
         product_type: product_type || product_data.product_type,
-        status: status || product_data.status,
+        status: status,
+
+        updated_at: d,
+      },
+    })
+
+    console.log(updated_data.updated_at)
+
+    res.status(201).json(updated_data)
+  } catch (error) {
+    res.status(500).json({ msg: `error : ${error}` })
+    console.log(error)
+  }
+})
+
+// @desc    PUT edit product by id
+// @route   PUT /api/products/id
+// @access  Private/only for user
+
+const softDeleteProductById = asyncHandler(async (req, res) => {
+  const { deleted, deleted_at } = req.body
+  const d = moment().tz('Asia/Jakarta').format()
+  console.log(d)
+  try {
+    const product_data = await product.findMany({
+      where: {
+        id: parseInt(req.params.id),
+      },
+    })
+
+    const updated_data = await product.update({
+      where: {
+        id: parseInt(req.params.id),
+      },
+      data: {
         deleted: deleted || product_data.deleted,
-        deleted_at: deleted ? deleted_at : product_data.deleted_at,
+        deleted_at: d,
         updated_at: new Date(),
       },
     })
+
     res.status(201).json(updated_data)
   } catch (error) {
     res.status(500).json({ msg: `error : ${error}` })
@@ -143,4 +184,5 @@ export {
   createProduct,
   updateProductById,
   deleteProductById,
+  softDeleteProductById,
 }

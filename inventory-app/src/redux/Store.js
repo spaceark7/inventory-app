@@ -4,6 +4,7 @@ import {
   productDeleteReducer,
   productDetailReducer,
   productListReducer,
+  productUpdateReducer,
 } from './reducer/productReducers'
 import {
   userDetailReducer,
@@ -28,6 +29,7 @@ const store = configureStore({
     userUpdate: userUpdateReducer,
     productList: productListReducer,
     productDetail: productDetailReducer,
+    productUpdate: productUpdateReducer,
     productDelete: productDeleteReducer,
   },
   middleware: (getDefaultMiddleware) =>

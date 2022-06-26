@@ -5,6 +5,7 @@ import {
   updateProductById,
   getProducts,
   deleteProductById,
+  softDeleteProductById,
 } from '../controllers/productController.js'
 import { protect } from '../middleware/authMiddleware.js'
 
@@ -16,7 +17,8 @@ router.route('/:id').get(protect, getProductById)
 
 router.route('/').post(createProduct)
 
-router.route('/:id').put(updateProductById)
+router.route('/:id').put(protect, updateProductById)
+router.route('/delete/:id').put(protect, softDeleteProductById)
 
 router.route('/:id').delete(deleteProductById)
 
