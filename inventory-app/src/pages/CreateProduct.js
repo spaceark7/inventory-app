@@ -1,9 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import Breadcrumb from '../components/Breadcrumb'
 
-import { PRODUCT_UPDATE_RESET } from '../redux/constant'
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
 import axios from 'axios'
@@ -13,20 +12,19 @@ import {
   ArrowLeftIcon,
   CheckIcon,
   SelectorIcon,
-  TrashIcon,
 } from '@heroicons/react/outline'
-import {
-  deleteProduct,
-  getProductDetail,
-  updateProduct,
-} from '../redux/action/productAction'
-import Modal from '../components/Modal'
+import { createProduct } from '../redux/action/productAction'
+
 import { Listbox, Switch, Transition } from '@headlessui/react'
 import NumberFormat from 'react-number-format'
 import ErrorScreen from '../components/ErrorScreen'
 
-const ProductEdit = () => {
-  const { id } = useParams()
+const CreateProduct = () => {
+  const productsType = [
+    { id: 1, value: 'Unit/Bundle', available: true },
+    { id: 2, value: 'Spare Part', available: true },
+    { id: 3, value: 'Pilih Tipe', available: false },
+  ]
   const parentRef = useRef()
   const navigate = useNavigate()
   const [productName, setProductName] = useState('')
@@ -36,11 +34,10 @@ const ProductEdit = () => {
   const [SKU, setSKU] = useState('')
   const [specification, setSpecification] = useState('')
   const [price, setPrice] = useState('')
-  const [product_type, setProductType] = useState('')
+  const [product_type, setProductType] = useState(productsType[2])
   const [status, setStatus] = useState(true)
 
-  const [image_path, setImagepath] = useState('')
-  const [isOpen, setIsOpen] = useState(false)
+  const [image_path, setImagepath] = useState('/images/product_placeholder.png')
 
   const [uploading, setUploading] = useState(false)
 
@@ -49,35 +46,26 @@ const ProductEdit = () => {
   const userLogin = useSelector((state) => state.userLogin)
   const { userInfo } = userLogin
 
-  const productDetail = useSelector((state) => state.productDetail)
-  const { loading, product, error } = productDetail
-
-  const productUpdate = useSelector((state) => state.productUpdate)
-  const {
-    loading: loadingUpdate,
-    success: successUpdate,
-    error: errorUpdate,
-    product: updatedProduct,
-  } = productUpdate
+  const productCreate = useSelector((state) => state.productCreate)
+  const { loading, product, error } = productCreate
 
   const handleUpdate = (e) => {
     e.preventDefault()
-    console.log('id user', userInfo.id)
+
     dispatch(
-      updateProduct({
-        id: product.id,
+      createProduct({
         product_name: productName,
-        product_SN: SerialNumber,
-        product_image: image_path,
+        SKU: SKU,
+        price: price,
         brand: brand,
         model: model,
-        SKU: SKU,
         specification: specification,
-        price: price,
-        product_type: product_type,
+        product_SN: SerialNumber,
+        product_image: image_path,
+        product_type: product_type.value,
         status: status,
-        updated_at: new Date().toLocaleString(),
-        update_user_id: userInfo.id,
+        created_at: new Date().toLocaleString(),
+        createdBy: userInfo.id,
       })
     )
   }
@@ -111,26 +99,6 @@ const ProductEdit = () => {
     }
   }
 
-  function closeModal() {
-    setIsOpen(false)
-  }
-
-  function openModal() {
-    setIsOpen(true)
-  }
-
-  const productsType = [
-    { id: 1, value: 'Unit/Bundle' },
-    { id: 2, value: 'Spare Part' },
-  ]
-
-  // Async needed to wait action finish before refetching data
-  const handleDelete = (id) => {
-    dispatch(deleteProduct(id))
-    closeModal()
-    navigate(-1)
-  }
-
   useEffect(() => {
     if (!userInfo) {
       navigate('/Login')
@@ -146,39 +114,13 @@ const ProductEdit = () => {
     if (!checkPermission) {
       navigate('/unauthorized')
     } else {
-      if (!product || product.id !== parseInt(id) || successUpdate) {
-        dispatch({ type: PRODUCT_UPDATE_RESET })
-        dispatch(getProductDetail(id))
-      } else {
-        setProductName(product.product_name)
-        setImagepath(product.product_image)
-        setBrand(product.brand)
-        setModel(product.model)
-        setSerialNumber(product.product_SN)
-        setSKU(product.SKU)
-        setSpecification(product.specification)
-        setStatus(product.status)
-        setPrice(product.price)
-        setProductType(product.product_type)
-      }
     }
-  }, [dispatch, userInfo, navigate, id, product, successUpdate, updatedProduct])
+  }, [dispatch, userInfo, navigate, product])
 
   return (
     <div ref={parentRef}>
-      {product && (
-        <Modal
-          isOpen={isOpen}
-          openModal={openModal}
-          closeModal={closeModal}
-          product={product}
-          handleAction={handleDelete}
-          loading={loadingUpdate}
-        />
-      )}
-
       <ToastContainer />
-      <Breadcrumb pageName={'Edit Profile'} />
+      <Breadcrumb pageName={'Buat Produk'} />
       <div
         className='ml-4 mt-2 inline-flex cursor-pointer items-center rounded-md p-2 text-sm  hover:bg-gray-200'
         onClick={() => {
@@ -187,7 +129,7 @@ const ProductEdit = () => {
       >
         <ArrowLeftIcon className='mr-2 h-4 w-4' /> Kembali
       </div>
-      {loading || loadingUpdate ? (
+      {loading ? (
         <div className='max-w-screen-lg py-2 px-4 '>
           <div className='flex flex-row rounded-lg bg-white pt-4 pb-6 pr-8 shadow-md'>
             <div className='profile-image relative mt-4  h-full rounded-full py-4 px-6 '>
@@ -253,8 +195,6 @@ const ProductEdit = () => {
         </div>
       ) : error ? (
         <ErrorScreen error={error} />
-      ) : errorUpdate ? (
-        <ErrorScreen error={errorUpdate} />
       ) : (
         <div className='w-full py-2 px-4 lg:max-w-screen-lg'>
           <div className='flex flex-row rounded-lg bg-white pt-4 pb-6 pr-8 shadow-md'>
@@ -281,15 +221,7 @@ const ProductEdit = () => {
               <h2 className='mb-4 text-xl font-bold text-slate-600'>
                 Informasi Detail
               </h2>
-              <div className='items-center justify-end lg:flex'>
-                <div
-                  onClick={openModal}
-                  className='group mr-3 inline-flex transform items-center rounded-lg border border-red-400 p-2  text-sm text-red-600 transition duration-150 ease-out hover:cursor-pointer hover:bg-red-100 hover:shadow-lg active:scale-95 active:bg-red-200'
-                >
-                  <TrashIcon className='mr-2 h-5 w-5 text-red-600 group-hover:text-red-700' />
-                  <span className='group-hover:text-red-700'>Hapus Produk</span>
-                </div>
-              </div>
+
               <form onSubmit={handleUpdate} action=''>
                 <div className=' grid w-full grid-cols-2'>
                   <label className='col-span-2 mb-4 mr-3 block'>
@@ -376,7 +308,9 @@ const ProductEdit = () => {
                     <Listbox value={product_type} onChange={setProductType}>
                       <div className='relative mt-1'>
                         <Listbox.Button className='relative w-full rounded-md border border-slate-300 bg-secondary-blue/10 bg-white px-3 py-2 text-left text-sm  shadow-sm invalid:border-pink-500 invalid:text-pink-600 focus:border-primary-navy/60 focus:bg-white focus:outline-none focus:ring-1 focus:ring-primary-navy/70 focus:invalid:border-pink-500 focus:invalid:ring-pink-500 disabled:border-slate-200 disabled:bg-slate-50 disabled:text-slate-500 disabled:shadow-none'>
-                          <span className='block truncate'>{product_type}</span>
+                          <span className='block truncate'>
+                            {product_type.value}
+                          </span>
                           <span className='pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2'>
                             <SelectorIcon
                               className='h-5 w-5 text-gray-400'
@@ -393,39 +327,43 @@ const ProductEdit = () => {
                           leaveTo='transform scale-80 opacity-0'
                         >
                           <Listbox.Options className='absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm'>
-                            {productsType.map((product, index) => (
-                              <Listbox.Option
-                                key={index}
-                                className={({ active }) =>
-                                  `relative cursor-default select-none py-2 pl-10 pr-4 ${
-                                    active
-                                      ? 'bg-sky-200 text-primary-blue'
-                                      : 'text-gray-900'
-                                  }`
-                                }
-                                value={product.value}
-                              >
-                                {({ selected }) => (
-                                  <>
-                                    <span
-                                      className={`block truncate ${
-                                        selected ? 'font-medium' : 'font-normal'
-                                      }`}
-                                    >
-                                      {product.value}
-                                    </span>
-                                    {selected ? (
-                                      <span className='absolute inset-y-0 left-0 flex items-center pl-3 text-primary-blue'>
-                                        <CheckIcon
-                                          className='h-5 w-5'
-                                          aria-hidden='true'
-                                        />
+                            {productsType
+                              .filter((product) => product.available)
+                              .map((product, index) => (
+                                <Listbox.Option
+                                  key={index}
+                                  className={({ active }) =>
+                                    `relative cursor-default select-none py-2 pl-10 pr-4 ${
+                                      active
+                                        ? 'bg-sky-200 text-primary-blue'
+                                        : 'text-gray-900'
+                                    }`
+                                  }
+                                  value={product}
+                                >
+                                  {({ selected }) => (
+                                    <>
+                                      <span
+                                        className={`block truncate ${
+                                          selected
+                                            ? 'font-medium'
+                                            : 'font-normal'
+                                        }`}
+                                      >
+                                        {product.value}
                                       </span>
-                                    ) : null}
-                                  </>
-                                )}
-                              </Listbox.Option>
-                            ))}
+                                      {selected ? (
+                                        <span className='absolute inset-y-0 left-0 flex items-center pl-3 text-primary-blue'>
+                                          <CheckIcon
+                                            className='h-5 w-5'
+                                            aria-hidden='true'
+                                          />
+                                        </span>
+                                      ) : null}
+                                    </>
+                                  )}
+                                </Listbox.Option>
+                              ))}
                           </Listbox.Options>
                         </Transition>
                       </div>
@@ -489,15 +427,24 @@ const ProductEdit = () => {
                     </p>
                   </div>
                   <button
+                    disabled={
+                      !productName ||
+                      !SKU ||
+                      !SerialNumber ||
+                      !price ||
+                      !model ||
+                      !brand ||
+                      product_type.id === 3
+                    }
                     onClick={() => {
                       parentRef.current.scrollIntoView({
                         behavior: 'smooth',
                         block: 'start',
                       })
                     }}
-                    className='mr-3 h-fit self-end rounded-md bg-primary-blue px-4 py-3 font-medium uppercase text-white disabled:cursor-not-allowed disabled:cursor-not-allowed disabled:bg-primary-blue/50 disabled:opacity-50'
+                    className='btn primary transiti mr-3 h-fit  self-end font-medium uppercase  disabled:cursor-not-allowed disabled:cursor-not-allowed disabled:bg-primary-blue/50 disabled:opacity-50'
                   >
-                    Update Product
+                    Buat Produk
                   </button>
                 </div>
               </form>
@@ -510,4 +457,4 @@ const ProductEdit = () => {
   )
 }
 
-export default ProductEdit
+export default CreateProduct

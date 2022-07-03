@@ -10,6 +10,7 @@ import { logout } from '../redux/action/userAction'
 import UserEdit from './UserEdit'
 import ProductEdit from './ProductEdit'
 import Unauthorized from './Unauthorized'
+import CreateProduct from './CreateProduct'
 
 const HomePage = () => {
   const dispatch = useDispatch()
@@ -91,6 +92,7 @@ const HomePage = () => {
           <Route path='/' element={<WelcomeScreen />} />
           <Route path='dashboard' element={<Dashboard />} />
           <Route path='product' element={<Product />} />
+          <Route path='create-product' element={<CreateProduct />} />
           <Route path='user-edit/:id' element={<UserEdit />} />
           <Route path='product-edit/:id' element={<ProductEdit />} />
           <Route path='sales-order' element={<SalesOrder />} />

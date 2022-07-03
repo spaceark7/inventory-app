@@ -17,7 +17,7 @@ const getProducts = asyncHandler(async (req, res) => {
         deleted: false,
       },
     })
-
+    // res.status(404).json({message: 'oops'})
     res.json(products_data)
   } catch (error) {
     res.status(404).json({ message: `${error.message}` })
@@ -48,24 +48,60 @@ const getProductById = asyncHandler(async (req, res) => {
 })
 
 // @desc    POST create new product
-// @route   POST /api/products/
+// @route   POST /api/products/new
 // @access  Private/only for user
 const createProduct = asyncHandler(async (req, res) => {
-  const data = JSON.parse(req.body.data)
+  const {
+    product_name,
+    product_image,
+    product_type,
+    product_SN,
+    status,
+    brand,
+    model,
+    price,
+    SKU,
+    specification,
+    created_at,
+    created_by,
+  } = req.body
+
+  console.log(req.body)
   try {
-    const product_data = await product.create({
-      data: {
-        product_name: data.product_name,
-        SKU: data.SKU,
-        price: data.price,
-        specification: data.specification,
-        product_SN: data.product_SN,
-        product_image: data.product_image,
-        product_type: data.product_type,
-        status: data.status,
+    const productExist = await product.findFirst({
+      where: {
+        product_name: {
+          contains: product_name,
+        },
+        SKU: {
+          contains: SKU,
+        },
       },
     })
-    res.status(201).json(product_data)
+
+    if (productExist) {
+      res.status(203).json({ message: 'Produk sudah ada' })
+    } else {
+      const new_product = await product.create({
+        data: {
+          product_name: product_name,
+          SKU: SKU,
+          price: parseInt(price),
+          brand: brand,
+          model: model,
+          specification: specification,
+          product_SN: product_SN,
+          product_image: product_image,
+          product_type: product_type,
+          status: status,
+          deleted: false,
+          created_at: created_at,
+          updated_at: created_at,
+          createdBy: created_by,
+        },
+      })
+      res.status(201).json(new_product)
+    }
   } catch (error) {
     res.status(500).json({ msg: `error : ${error}` })
   }
@@ -89,6 +125,8 @@ const updateProductById = asyncHandler(async (req, res) => {
     price,
     SKU,
     specification,
+    update_user_id,
+    updated_at,
   } = req.body
 
   try {
@@ -105,16 +143,16 @@ const updateProductById = asyncHandler(async (req, res) => {
       data: {
         product_name: product_name || product_data.product_name,
         SKU: SKU || product_data.SKU,
-        price: price || product_data.price,
+        price: parseInt(price) || product_data.price,
         brand: brand || product_data.brand,
         model: model || product_data.model,
         specification: specification || product_data.specification,
         product_SN: product_SN || product_data.product_SN,
         product_image: product_image || product_data.product_image,
         product_type: product_type || product_data.product_type,
-        status: status,
-
-        updated_at: d,
+        status: status || product_data.status,
+        updated_at: updated_at,
+        update_user_id: update_user_id,
       },
     })
 

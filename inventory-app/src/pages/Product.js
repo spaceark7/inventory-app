@@ -3,8 +3,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import Breadcrumb from '../components/Breadcrumb'
 import { deleteProduct, listProducts } from '../redux/action/productAction'
 
-import { useNavigate } from 'react-router-dom'
-import { ArrowLeftIcon } from '@heroicons/react/outline'
+import { Link, useNavigate } from 'react-router-dom'
+import { ArrowLeftIcon, PlusIcon } from '@heroicons/react/outline'
 import ProductRow from '../components/ProductRow'
 import Modal from '../components/Modal'
 import { ToastContainer } from 'react-toastify'
@@ -125,13 +125,22 @@ const Product = () => {
           </div>
           <div className='w-full py-4 px-4'>
             <div className='min-h-screen rounded-lg bg-white px-4 pt-4 pb-6 shadow-md'>
-              {products ? (
-                <h4 className='font-body text-slate-700'>
-                  Jumlah produk : {products.length}
-                </h4>
-              ) : (
-                'error'
-              )}
+              <div className='mb-4 flex justify-between'>
+                {products ? (
+                  <h4 className='font-body text-slate-700'>
+                    Jumlah produk : {products.length}
+                  </h4>
+                ) : (
+                  'error'
+                )}
+                <Link to='/create-product'>
+                  <div className='btn primary icon inline-flex items-center'>
+                    <PlusIcon className='mr-2 h-5 w-5' />
+                    <span>Tambah Produk</span>
+                  </div>
+                </Link>
+              </div>
+
               <div className='border-slate relative rounded-xl border bg-gray-50 bg-opacity-75 shadow-sm'>
                 <div className='scrollbar mt-4 max-h-[80vh] overflow-auto bg-gray-50 bg-opacity-75 pb-8'>
                   <table className='w-full table-auto border-collapse px-4 text-sm'>

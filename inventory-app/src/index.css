@@ -4,6 +4,20 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700;800;900&family=Work+Sans:wght@300;400;500;600;700;900&display=swap');
 
+@layer components {
+  .btn {
+    @apply select-none rounded-md px-4 py-2 hover:cursor-pointer;
+  }
+  .primary {
+    @apply bg-primary-blue text-white transition duration-100 ease-out hover:bg-primary-blue/90 hover:shadow-md active:scale-95 active:bg-primary-blue;
+  }
+  .secondary {
+    @apply border border-primary-blue text-primary-blue  transition duration-100 ease-out  hover:shadow-md active:scale-95;
+  }
+  .icon {
+    @apply py-2 pl-2 pr-4;
+  }
+}
 @layer utilities {
   ::-webkit-scrollbar {
     width: 12px;

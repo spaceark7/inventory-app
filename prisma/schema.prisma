@@ -11,7 +11,7 @@ model product {
   id            Int      @id @default(autoincrement())
   product_name  String   @unique(map: "Product_product_name_key") @db.VarChar(255)
   product_SN    String   @unique(map: "Product_product_SN_key") @db.VarChar(255)
-  product_image String   @db.VarChar(255)
+  product_image String?   @db.VarChar(255)
   brand String?   @db.VarChar(255) @default("")
   model String?   @db.VarChar(255) @default("")
   SKU           String   @db.VarChar(255)
@@ -20,10 +20,13 @@ model product {
   product_type  String   @db.VarChar(255)
   status        Boolean  @default(true)
   deleted       Boolean @default(false)
-  deleted_at    DateTime?
-  created_at    DateTime @default(now())
-  updated_at    DateTime @updatedAt
- 
+  deleted_at    String?
+  created_at    String @db.VarChar(255)
+  updated_at    String @db.VarChar(255)
+  createdBy user? @relation(name: "createdProduct", fields: [userId], references: [id])
+  userId Int? 
+  updatedBy user? @relation(name :"updatedProduct",fields: [update_user_id], references: [id])
+  update_user_id Int?  
 }
 
 model user {
@@ -32,11 +35,13 @@ model user {
   email      String   @unique(map: "User_email_key") @db.VarChar(255)
   first_name String   @db.VarChar(255)
   last_name  String   @db.VarChar(255)
-  image_path String   @db.VarChar(255)
+  image_path String?   @db.VarChar(255)
   password   String   @db.VarChar(255)
   access_level access_level[]
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+  created_at String? 
+  updated_at String? 
+  created_products product[] @relation(name: "createdProduct")
+  updated_products product[]  @relation(name: "updatedProduct")
 }
 
 model access_level {

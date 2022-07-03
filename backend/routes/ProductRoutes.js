@@ -15,7 +15,7 @@ router.route('/').get(getProducts)
 
 router.route('/:id').get(protect, getProductById)
 
-router.route('/').post(createProduct)
+router.route('/new').post(protect, createProduct)
 
 router.route('/:id').put(protect, updateProductById)
 router.route('/delete/:id').put(protect, softDeleteProductById)

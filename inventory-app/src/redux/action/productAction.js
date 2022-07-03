@@ -2,6 +2,9 @@ import { TrashIcon } from '@heroicons/react/outline'
 import axios from 'axios'
 import { toast } from 'react-toastify'
 import {
+  PRODUCT_CREATE_FAIL,
+  PRODUCT_CREATE_REQUEST,
+  PRODUCT_CREATE_SUCCESS,
   PRODUCT_DELETE_FAIL,
   PRODUCT_DELETE_REQUEST,
   PRODUCT_DELETE_SUCCESS,
@@ -72,6 +75,58 @@ export const getProductDetail = (id) => async (dispatch, getState) => {
     }
     dispatch({
       type: PRODUCT_DETAIL_FAIL,
+      payload: message,
+    })
+  }
+}
+
+export const createProduct = (product) => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: PRODUCT_CREATE_REQUEST,
+    })
+
+    const {
+      userLogin: { userInfo },
+    } = getState()
+
+    const config = {
+      headers: {
+        'CONTENT-TYPE': 'application/json',
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    }
+
+    const { data } = await axios.post(`/api/products/new`, product, config)
+
+    dispatch({
+      type: PRODUCT_CREATE_SUCCESS,
+      payload: data,
+    })
+
+    toast.success(
+      <>
+        <p className='text-sm'>{`produk ${data.product_name} berhasil dibuat`}</p>
+      </>,
+      {
+        position: 'top-right',
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: false,
+      }
+    )
+  } catch (error) {
+    const message =
+      error.response && error.response.data.message
+        ? error.response.data.message
+        : error.message
+    if (message === 'Invalid credentials') {
+      dispatch(logout())
+    }
+    dispatch({
+      type: PRODUCT_CREATE_FAIL,
       payload: message,
     })
   }

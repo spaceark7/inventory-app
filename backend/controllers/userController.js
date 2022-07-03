@@ -4,6 +4,7 @@ import generateToken from '../utils/generateTokens.js'
 import bcrypt from 'bcryptjs'
 const { PrismaClient } = Prisma
 const { user } = new PrismaClient()
+import moment from 'moment-timezone'
 
 // @desc    POST user & authenticate user
 // @route   POST /api/users/login
@@ -176,7 +177,7 @@ const updateUserProfile = asyncHandler(async (req, res) => {
               id: access_level.id,
             })),
         },
-        updated_at: new Date().toISOString(),
+        updated_at: new Date().toLocaleString(),
       },
       include: {
         access_level: true,

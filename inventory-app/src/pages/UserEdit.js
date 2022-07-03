@@ -10,6 +10,7 @@ import axios from 'axios'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { ArrowLeftIcon } from '@heroicons/react/outline'
+import useValidation from '../validHooks'
 
 const UserEdit = () => {
   const { id } = useParams()
@@ -25,6 +26,7 @@ const UserEdit = () => {
   const [access_level, setAccessLevel] = useState([])
   const [passwordToggle, setPasswordToggle] = useState(false)
   const [uploading, setUploading] = useState(false)
+  const [valid, setValid] = useState()
 
   const dispatch = useDispatch()
 
@@ -33,6 +35,8 @@ const UserEdit = () => {
 
   const userUpdate = useSelector((state) => state.userUpdate)
   const { success, loading: loadingUpdate } = userUpdate
+
+  const t = useValidation(password, confirmPassword)
 
   const handleUpdate = (e) => {
     e.preventDefault()
@@ -92,41 +96,41 @@ const UserEdit = () => {
       <ToastContainer />
       <Breadcrumb pageName={'Edit Profile'} />
       <div
-        className='inline-flex items-center text-sm ml-4 p-2 mt-2 cursor-pointer rounded-md  hover:bg-gray-200'
+        className='ml-4 mt-2 inline-flex cursor-pointer items-center rounded-md p-2 text-sm  hover:bg-gray-200'
         onClick={() => {
           navigate('/')
         }}
       >
-        <ArrowLeftIcon className='mr-2 w-4 h-4' /> Kembali
+        <ArrowLeftIcon className='mr-2 h-4 w-4' /> Kembali
       </div>
       {loading ? (
-        <div className='py-2 px-4 max-w-screen-lg '>
-          <div className='flex flex-row bg-white pt-4 pb-6 pr-8 rounded-lg shadow-md'>
-            <div className='profile-image relative rounded-full  h-full py-4 px-6 mt-4 '>
+        <div className='max-w-screen-lg py-2 px-4 '>
+          <div className='flex flex-row rounded-lg bg-white pt-4 pb-6 pr-8 shadow-md'>
+            <div className='profile-image relative mt-4  h-full rounded-full py-4 px-6 '>
               <div className='h-64 w-64 rounded-full  '>
                 <Skeleton className='h-64 w-64 rounded-full' />
               </div>
-              <div className='mt-2 text-sm h-20 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file: font-medium file:bg-secondary-blue/20 file:text-primary-blue'>
+              <div className='file: mt-2 h-20 text-sm font-medium file:mr-4 file:rounded-full file:border-0 file:bg-secondary-blue/20 file:py-2 file:px-4 file:text-sm file:text-primary-blue'>
                 <Skeleton />
               </div>
             </div>
-            <div className='w-full pl-6 py-4'>
-              <h2 className='font-bold text-xl max-w-sm text-slate-600 mb-4'>
+            <div className='w-full py-4 pl-6'>
+              <h2 className='mb-4 max-w-sm text-xl font-bold text-slate-600'>
                 <Skeleton />
               </h2>
               <form onSubmit={handleUpdate} action=''>
-                <div className='grid grid-cols-2 max-w-lg mb-4'>
+                <div className='mb-4 grid max-w-lg grid-cols-2'>
                   <Skeleton className='h-12' count={2} />
                 </div>
                 <div className='mb-8'>
-                  <h2 className='font-bold text-xl max-w-sm  text-slate-600 mb-3'>
+                  <h2 className='mb-3 max-w-sm text-xl  font-bold text-slate-600'>
                     <Skeleton />
                   </h2>
-                  <div className='flex flex-row flex-wrap max-w-sm'>
+                  <div className='flex max-w-sm flex-row flex-wrap'>
                     {Array.from({ length: 4 }).map((item, index) => (
                       <div
                         key={index}
-                        className='py-2 px-4 mr-3 max-w-xs font-semibold text-xs rounded-full'
+                        className='mr-3 max-w-xs rounded-full py-2 px-4 text-xs font-semibold'
                       >
                         <Skeleton />
                       </div>
@@ -134,7 +138,7 @@ const UserEdit = () => {
                   </div>
                 </div>
                 <div className='border-b border-b-slate-300 pb-6'>
-                  <h2 className='font-bold text-xl max-w-xs text-slate-600 mb-4'>
+                  <h2 className='mb-4 max-w-xs text-xl font-bold text-slate-600'>
                     <Skeleton />
                   </h2>
                   <div className='grid grid-cols-2'>
@@ -147,15 +151,15 @@ const UserEdit = () => {
                     </div>
                   </div>
 
-                  <div className='flex justify-between items-center mt-2 max-w-sm text-sm'>
+                  <div className='mt-2 flex max-w-sm items-center justify-between text-sm'>
                     <Skeleton className='h-10' />
                     <span className='text-slate-600'>
                       <Skeleton />
                     </span>
                   </div>
                 </div>
-                <div className='flex justify-end mt-6 '>
-                  <div className='max-w-sm h-24'>
+                <div className='mt-6 flex justify-end '>
+                  <div className='h-24 max-w-sm'>
                     <Skeleton />
                   </div>
                 </div>
@@ -166,11 +170,11 @@ const UserEdit = () => {
       ) : error ? (
         'error'
       ) : (
-        <div className='py-2 px-4  w-fit '>
-          <div className='flex flex-row bg-white pt-4 pb-6 pr-8 rounded-lg shadow-md'>
-            <div className='profile-image relative max-w-xs h-full rounded-full py-4 px-6 mt-4 '>
+        <div className='w-fit py-2  px-4 '>
+          <div className='flex flex-row rounded-lg bg-white pt-4 pb-6 pr-8 shadow-md'>
+            <div className='profile-image relative mt-4 h-full max-w-xs rounded-full py-4 px-6 '>
               <img
-                className='w-64 h-64 object-cover object-center rounded-full'
+                className='h-64 w-64 rounded-full object-cover object-center'
                 src={image_path}
                 alt={`profile of ${username}`}
               />
@@ -181,16 +185,16 @@ const UserEdit = () => {
                 name='image_upload'
                 onChange={handleUpload}
                 id='image_upload'
-                className='mt-2 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file: font-medium file:bg-secondary-blue/20 file:text-primary-blue'
+                className='file: mt-2 text-sm font-medium file:mr-4 file:rounded-full file:border-0 file:bg-secondary-blue/20 file:py-2 file:px-4 file:text-sm file:text-primary-blue'
               />
             </div>
-            <div className='w-full pl-6 py-4'>
-              <h2 className='font-bold text-xl text-slate-600 mb-4'>
+            <div className='w-full py-4 pl-6'>
+              <h2 className='mb-4 text-xl font-bold text-slate-600'>
                 Informasi Detail
               </h2>
               <form onSubmit={handleUpdate} action=''>
-                <div className='grid grid-cols-2 max-w-lg mb-4'>
-                  <label className='block w-max mb-4 mr-3  '>
+                <div className='mb-4 grid max-w-lg grid-cols-2'>
+                  <label className='mb-4 mr-3 block w-max  '>
                     <span className='block text-sm font-medium text-slate-700'>
                       User Name
                     </span>
@@ -198,10 +202,10 @@ const UserEdit = () => {
                       value={username}
                       onChange={(e) => setUsername(e.target.value)}
                       type='text'
-                      className='mt-1 block w-full bg-secondary-blue/10 focus:bg-white px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 focus:outline-none focus:border-primary-navy/60 focus:ring-1 focus:ring-primary-navy/70 disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none invalid:border-pink-500 invalid:text-pink-600 focus:invalid:border-pink-500 focus:invalid:ring-pink-500'
+                      className='mt-1 block w-full rounded-md border border-slate-300 bg-secondary-blue/10 bg-white px-3 py-2 text-sm placeholder-slate-400 shadow-sm invalid:border-pink-500 invalid:text-pink-600 focus:border-primary-navy/60 focus:bg-white focus:outline-none focus:ring-1 focus:ring-primary-navy/70 focus:invalid:border-pink-500 focus:invalid:ring-pink-500 disabled:border-slate-200 disabled:bg-slate-50 disabled:text-slate-500 disabled:shadow-none'
                     />
                   </label>
-                  <label className='block w-max mb-4 mr-3'>
+                  <label className='mb-4 mr-3 block w-max'>
                     <span className='block text-sm font-medium text-slate-700'>
                       Alamat Email
                     </span>
@@ -209,10 +213,10 @@ const UserEdit = () => {
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       type='email'
-                      className='mt-1 block w-full bg-secondary-blue/10 focus:bg-white px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 focus:outline-none focus:border-primary-navy/60 focus:ring-1 focus:ring-primary-navy/70 disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none invalid:border-pink-500 invalid:text-pink-600 focus:invalid:border-pink-500 focus:invalid:ring-pink-500'
+                      className='mt-1 block w-full rounded-md border border-slate-300 bg-secondary-blue/10 bg-white px-3 py-2 text-sm placeholder-slate-400 shadow-sm invalid:border-pink-500 invalid:text-pink-600 focus:border-primary-navy/60 focus:bg-white focus:outline-none focus:ring-1 focus:ring-primary-navy/70 focus:invalid:border-pink-500 focus:invalid:ring-pink-500 disabled:border-slate-200 disabled:bg-slate-50 disabled:text-slate-500 disabled:shadow-none'
                     />
                   </label>
-                  <label className='block w-max mb-4 mr-3'>
+                  <label className='mb-4 mr-3 block w-max'>
                     <span className='block text-sm font-medium text-slate-700'>
                       Nama Depan
                     </span>
@@ -220,10 +224,10 @@ const UserEdit = () => {
                       value={first_name}
                       onChange={(e) => setFirstName(e.target.value)}
                       type='text'
-                      className='mt-1 block w-full bg-secondary-blue/10 focus:bg-white px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 focus:outline-none focus:border-primary-navy/60 focus:ring-1 focus:ring-primary-navy/70 disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none invalid:border-pink-500 invalid:text-pink-600 focus:invalid:border-pink-500 focus:invalid:ring-pink-500'
+                      className='mt-1 block w-full rounded-md border border-slate-300 bg-secondary-blue/10 bg-white px-3 py-2 text-sm placeholder-slate-400 shadow-sm invalid:border-pink-500 invalid:text-pink-600 focus:border-primary-navy/60 focus:bg-white focus:outline-none focus:ring-1 focus:ring-primary-navy/70 focus:invalid:border-pink-500 focus:invalid:ring-pink-500 disabled:border-slate-200 disabled:bg-slate-50 disabled:text-slate-500 disabled:shadow-none'
                     />
                   </label>
-                  <label className='block w-max mb-4 mr-3'>
+                  <label className='mb-4 mr-3 block w-max'>
                     <span className='block text-sm font-medium text-slate-700'>
                       Nama Belakang
                     </span>
@@ -231,12 +235,12 @@ const UserEdit = () => {
                       value={last_name}
                       onChange={(e) => setLastName(e.target.value)}
                       type='text'
-                      className='mt-1 block w-full bg-secondary-blue/10 focus:bg-white px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 focus:outline-none focus:border-primary-navy/60 focus:ring-1 focus:ring-primary-navy/70 disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none invalid:border-pink-500 invalid:text-pink-600 focus:invalid:border-pink-500 focus:invalid:ring-pink-500'
+                      className='mt-1 block w-full rounded-md border border-slate-300 bg-secondary-blue/10 bg-white px-3 py-2 text-sm placeholder-slate-400 shadow-sm invalid:border-pink-500 invalid:text-pink-600 focus:border-primary-navy/60 focus:bg-white focus:outline-none focus:ring-1 focus:ring-primary-navy/70 focus:invalid:border-pink-500 focus:invalid:ring-pink-500 disabled:border-slate-200 disabled:bg-slate-50 disabled:text-slate-500 disabled:shadow-none'
                     />
                   </label>
                 </div>
                 <div className='mb-8'>
-                  <h2 className='font-bold text-xl text-slate-600 mb-3'>
+                  <h2 className='mb-3 text-xl font-bold text-slate-600'>
                     Akses Level
                   </h2>
                   <div className='flex flex-row flex-wrap'>
@@ -244,7 +248,7 @@ const UserEdit = () => {
                       ? access_level.map((item, index) => (
                           <div
                             key={item.id}
-                            className='py-2 px-4 mr-3 bg-primary-blue/5 text-primary-blue font-semibold text-xs rounded-full'
+                            className='mr-3 rounded-full bg-primary-blue/5 py-2 px-4 text-xs font-semibold text-primary-blue'
                           >
                             {item.access_type}
                           </div>
@@ -253,7 +257,7 @@ const UserEdit = () => {
                   </div>
                 </div>
                 <div className='border-b border-b-slate-300 pb-6'>
-                  <h2 className='font-bold text-xl text-slate-600 mb-4'>
+                  <h2 className='mb-4 text-xl font-bold text-slate-600'>
                     Keamanan
                   </h2>
                   <div className='grid grid-cols-2'>
@@ -267,44 +271,46 @@ const UserEdit = () => {
                           onChange={(e) => setPassword(e.target.value)}
                           type={passwordToggle ? 'text' : 'password'}
                           placeholder='Masukan Kata sandi baru'
-                          className='mt-1 block form-input w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 focus:outline-none focus:border-primary-navy/60 focus:ring-1 focus:ring-primary-navy/70 disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none invalid:border-pink-500 invalid:text-pink-600 focus:invalid:border-pink-500 focus:invalid:ring-pink-500'
+                          className='form-input mt-1 block w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm placeholder-slate-400 shadow-sm invalid:border-pink-500 invalid:text-pink-600 focus:border-primary-navy/60 focus:outline-none focus:ring-1 focus:ring-primary-navy/70 focus:invalid:border-pink-500 focus:invalid:ring-pink-500 disabled:border-slate-200 disabled:bg-slate-50 disabled:text-slate-500 disabled:shadow-none'
                         />
                       </label>
                     </div>
 
-                    <label className='block w-max mb-2'>
+                    <label className='mb-2 block w-max'>
                       <span className='block text-sm font-medium text-slate-700'>
                         Konfirmasi kata sandi baru
                       </span>
                       <input
                         value={confirmPassword}
-                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        onChange={(e) => {
+                          setConfirmPassword(e.target.value)
+                        }}
                         type={passwordToggle ? 'text' : 'password'}
                         placeholder='Ulang Kata sandi baru'
                         className={
-                          password !== confirmPassword
-                            ? 'mt-1 block w-full px-3 py-2 peer bg-white border border-pink-500 focus:border-pink-500 rounded-md text-sm shadow-sm placeholder-slate-400 focus:outline-none  focus:ring-1 focus:ring-pink-600 disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none invalid:border-pink-500 invalid:text-pink-600 '
-                            : 'mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 focus:outline-none focus:border-primary-navy/60 focus:ring-1 focus:ring-primary-navy/70 disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none invalid:border-pink-500 invalid:text-pink-600 focus:invalid:border-pink-500 focus:invalid:ring-pink-500'
+                          valid === false
+                            ? 'peer mt-1 block w-full rounded-md border border-pink-500 bg-white px-3 py-2 text-sm placeholder-slate-400 shadow-sm invalid:border-pink-500 invalid:text-pink-600  focus:border-pink-500 focus:outline-none focus:ring-1 focus:ring-pink-600 disabled:border-slate-200 disabled:bg-slate-50 disabled:text-slate-500 disabled:shadow-none '
+                            : 'mt-1 block w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm placeholder-slate-400 shadow-sm invalid:border-pink-500 invalid:text-pink-600 focus:border-primary-navy/60 focus:outline-none focus:ring-1 focus:ring-primary-navy/70 focus:invalid:border-pink-500 focus:invalid:ring-pink-500 disabled:border-slate-200 disabled:bg-slate-50 disabled:text-slate-500 disabled:shadow-none'
                         }
                       />
                     </label>
                   </div>
-                  {password !== confirmPassword && (
-                    <p className='mt-2 text-pink-600 text-sm'>
+                  {confirmPassword !== password && (
+                    <p className='mt-2 text-sm text-pink-600'>
                       Kata sandi tidak cocok
                     </p>
                   )}
-                  <div className='flex justify-between items-center mt-2 w-fit text-sm'>
+                  <div className='mt-2 flex w-fit items-center justify-between text-sm'>
                     <input
                       type='checkbox'
                       value={passwordToggle}
-                      className='form-checkbox rounded text-lg text-primary-blue mr-2'
+                      className='form-checkbox mr-2 rounded text-lg text-primary-blue'
                       onChange={(e) => setPasswordToggle(e.target.checked)}
                     />
                     <span className='text-slate-600'>Tampilkan sandi</span>
                   </div>
                 </div>
-                <div className='flex justify-end mt-6'>
+                <div className='mt-6 flex justify-end'>
                   <button
                     onClick={() => {
                       parentRef.current.scrollIntoView({
@@ -313,7 +319,7 @@ const UserEdit = () => {
                       })
                     }}
                     disabled={password !== confirmPassword}
-                    className='bg-primary-blue px-4 py-3 disabled:bg-primary-blue/50 disabled:cursor-not-allowed rounded-md disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium uppercase'
+                    className='rounded-md bg-primary-blue px-4 py-3 font-medium uppercase text-white disabled:cursor-not-allowed disabled:cursor-not-allowed disabled:bg-primary-blue/50 disabled:opacity-50'
                   >
                     Update Profile
                   </button>

@@ -49,23 +49,23 @@ const WelcomeScreen = () => {
         <>
           <Breadcrumb pageName={'Welcome Page'} />
           <div className='px-4'>
-            <div className='grid grid-flow-row space-y-4 mt-4 py-4 auto-rows-min'>
-              <div className='user-banner h-min flex flex-row items-stretch'>
-                <div className='w-2/3 bg-gradient-to-r w-full from-primary-blue to-secondary-blue text-white rounded-md px-6 pt-6 flex shadow-lg'>
-                  <div className='w-1/2 pt-2'>
-                    <h2 className='text-5xl font-body'>
+            <div className='mt-4 grid grid-flow-row auto-rows-min space-y-4 py-4'>
+              <div className='user-banner flex h-min flex-row items-stretch'>
+                <div className='flex w-2/3 w-full rounded-md bg-gradient-to-r from-primary-blue to-secondary-blue px-6 pt-6  text-white shadow-lg'>
+                  <div className='w-1/2 pt-2 pb-6'>
+                    <h2 className='font-body text-5xl'>
                       Halo,{' '}
                       <span className='font-medium'>{user.first_name}</span>
                     </h2>
                     <Link to={`/user-edit/${user.id}`}>
-                      <div className='bg-slate-100  inline-flex items-center text-primary-blue text-xs font-semibold rounded-md w-max py-1 px-2 mt-2 hover:shadow-lg cursor-pointer hover:text-sky-700'>
+                      <div className='mt-2  inline-flex w-max cursor-pointer items-center rounded-md bg-slate-100 py-1 px-2 text-xs font-semibold text-primary-blue hover:text-sky-700 hover:shadow-lg'>
                         <span className='mr-1'>Edit profile </span>{' '}
                         <span>
                           <PencilAltIcon className='h-4 w-4' />
                         </span>
                       </div>
                     </Link>
-                    <div className='mt-4 text-white/80 text-sm'>
+                    <div className='mt-4 text-sm text-white/80'>
                       <Moment
                         element={'div'}
                         local
@@ -75,14 +75,14 @@ const WelcomeScreen = () => {
                       />
                       <Clock format='HH:mm:ss' ticking timezone={timezone} />
                     </div>
-                    <div className='mt-2 text-white/80  w-fit py-2'>
+                    <div className='mt-2 w-fit  py-2 text-white/80'>
                       <h2 className='text-sm'>Akses Level Anda :</h2>
-                      <div className='space-x-2 mt-1'>
+                      <div className='mt-1 space-x-2'>
                         {access &&
                           access.map((item) => (
                             <span
                               key={item.id}
-                              className='px-2 py-1 font-medium rounded-sm text-sm font-body bg-white/10'
+                              className='rounded-sm bg-white/10 px-2 py-1 font-body text-sm font-medium'
                             >
                               {item.access_type}
                             </span>
@@ -90,27 +90,27 @@ const WelcomeScreen = () => {
                       </div>
                     </div>
                   </div>
-                  <div className='w-1/2 relative flex items-end'>
+                  <div className='relative flex w-1/2 items-end'>
                     <img
-                      className='object-bottom w-full'
+                      className='w-full object-bottom'
                       src='/images/welcome_character.png'
                       alt='welcome 3d illustration'
                     />
                   </div>
                 </div>
-                <div className='w-1/3 ml-4 bg-white rounded-md shadow-md px-4 py-4'>
-                  <h3 className='font-semibold text-primary-blue pb-3 border-b border-b-slate-200 mb-6'>
+                <div className='ml-4 w-1/3 rounded-md bg-white px-4 py-4 shadow-md'>
+                  <h3 className='mb-6 border-b border-b-slate-200 pb-3 font-semibold text-primary-blue'>
                     Quick Menu
                   </h3>
-                  <span className='px-4 font-body py-2 mr-2 border rounded-md border-primary-blue border-opacity-60 w-fit text-primary-blue'>
+                  <span className='mr-2 w-fit rounded-md border border-primary-blue border-opacity-60 px-4 py-2 font-body text-primary-blue'>
                     Buat Penjualan
                   </span>
-                  <span className='px-4 font-body py-2 border rounded-md border-primary-blue border-opacity-60 w-fit text-primary-blue'>
+                  <span className='w-fit rounded-md border border-primary-blue border-opacity-60 px-4 py-2 font-body text-primary-blue'>
                     Lihat Stock
                   </span>
                 </div>
               </div>
-              <div className='progress-info justify-start flex flex-wrap h-min'>
+              <div className='progress-info flex h-min flex-wrap justify-start'>
                 <InsightCard />
                 <InsightCard />
                 <InsightCard />
