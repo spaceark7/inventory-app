@@ -5,6 +5,7 @@ import {
   productDeleteReducer,
   productDetailReducer,
   productListReducer,
+  productSearchReducer,
   productUpdateReducer,
 } from './reducer/productReducers'
 import {
@@ -30,6 +31,7 @@ const store = configureStore({
     userUpdate: userUpdateReducer,
     productList: productListReducer,
     productDetail: productDetailReducer,
+    productSearch: productSearchReducer,
     productCreate: productCreateReducer,
     productUpdate: productUpdateReducer,
     productDelete: productDeleteReducer,

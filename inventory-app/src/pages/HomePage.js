@@ -14,8 +14,7 @@ import CreateProduct from './CreateProduct'
 
 const HomePage = () => {
   const dispatch = useDispatch()
-  // const userLogin = useSelector((state) => state.userLogin)
-  // const {userInfo} = userLogin
+
   const navigate = useNavigate()
 
   const handleLogout = () => {

@@ -14,6 +14,9 @@ import {
   PRODUCT_LIST_FAIL,
   PRODUCT_LIST_REQUEST,
   PRODUCT_LIST_SUCCESS,
+  PRODUCT_SEARCH_FAIL,
+  PRODUCT_SEARCH_REQUEST,
+  PRODUCT_SEARCH_SUCCESS,
   PRODUCT_UPDATE_FAIL,
   PRODUCT_UPDATE_REQUEST,
   PRODUCT_UPDATE_SUCCESS,
@@ -75,6 +78,62 @@ export const getProductDetail = (id) => async (dispatch, getState) => {
     }
     dispatch({
       type: PRODUCT_DETAIL_FAIL,
+      payload: message,
+    })
+  }
+}
+
+export const searchProduct = (query) => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: PRODUCT_SEARCH_REQUEST,
+    })
+
+    const {
+      userLogin: { userInfo },
+    } = getState()
+
+    const config = {
+      headers: {
+        'CONTENT-TYPE': 'application/json',
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    }
+
+    const { data } = await axios.post(
+      `/api/products/search`,
+      { query: query },
+      config
+    )
+
+    dispatch({
+      type: PRODUCT_SEARCH_SUCCESS,
+      payload: data,
+    })
+
+    toast.success(
+      <>
+        <p className='text-sm'>{`produk ${data.product_name} berhasil dibuat`}</p>
+      </>,
+      {
+        position: 'top-right',
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: false,
+      }
+    )
+  } catch (error) {
+    const message =
+      error.response && error.response.data.message
+        ? error.response.data.message
+        : error.message
+    if (message === 'Invalid credentials') {
+      dispatch(logout())
+    }
+    dispatch({
+      type: PRODUCT_SEARCH_FAIL,
       payload: message,
     })
   }

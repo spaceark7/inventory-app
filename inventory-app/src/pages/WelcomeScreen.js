@@ -27,7 +27,7 @@ const WelcomeScreen = () => {
   useEffect(() => {
     let tz = Intl.DateTimeFormat().resolvedOptions().timeZone
     setTimeZone(tz)
-    console.log('from detail:', error)
+
     if (!userInfo) {
       navigate('/login')
     } else {

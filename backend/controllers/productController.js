@@ -66,7 +66,6 @@ const createProduct = asyncHandler(async (req, res) => {
     created_by,
   } = req.body
 
-  console.log(req.body)
   try {
     const productExist = await product.findFirst({
       where: {
@@ -104,6 +103,53 @@ const createProduct = asyncHandler(async (req, res) => {
     }
   } catch (error) {
     res.status(500).json({ msg: `error : ${error}` })
+  }
+})
+
+// @desc    POST search product by name SN or brand
+// @route   POST /api/products/search
+// @access  Private/only for user
+
+const searchProducts = asyncHandler(async (req, res) => {
+  const { query } = req.body
+
+  let result = []
+  try {
+    const product_data_by_name = await product.findMany({
+      where: {
+        product_name: {
+          contains: query,
+        },
+      },
+    })
+
+    result = result.concat(product_data_by_name)
+
+    const product_data_by_SN = await product.findMany({
+      where: {
+        product_SN: query,
+      },
+    })
+    result = result.concat(product_data_by_SN)
+
+    const product_data_by_model = await product.findMany({
+      where: {
+        model: query,
+      },
+    })
+    result = result.concat(product_data_by_model)
+
+    const product_data_by_brand = await product.findMany({
+      where: {
+        brand: query,
+      },
+    })
+    result = result.concat(product_data_by_brand)
+
+    res.status(201).json(result)
+  } catch (error) {
+    res.status(500).json({ msg: `error : ${error}` })
+    console.log(error)
   }
 })
 
@@ -163,7 +209,7 @@ const updateProductById = asyncHandler(async (req, res) => {
   }
 })
 
-// @desc    PUT edit product by id
+// @desc    PUT soft delete product by id
 // @route   PUT /api/products/id
 // @access  Private/only for user
 
@@ -216,6 +262,7 @@ const deleteProductById = asyncHandler(async (req, res) => {
 export {
   getProducts,
   getProductById,
+  searchProducts,
   createProduct,
   updateProductById,
   deleteProductById,
