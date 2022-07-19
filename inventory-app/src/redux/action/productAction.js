@@ -110,20 +110,35 @@ export const searchProduct = (query) => async (dispatch, getState) => {
       type: PRODUCT_SEARCH_SUCCESS,
       payload: data,
     })
-
-    toast.success(
-      <>
-        <p className='text-sm'>{`produk ${data.product_name} berhasil dibuat`}</p>
-      </>,
-      {
-        position: 'top-right',
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: false,
-      }
-    )
+    if (data.length > 0) {
+      toast.success(
+        <>
+          <p className='text-sm'>{`${data.length} produk ditemukan`}</p>
+        </>,
+        {
+          position: 'top-right',
+          autoClose: 3000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: false,
+        }
+      )
+    } else {
+      toast.warning(
+        <>
+          <p className='text-sm'>{`Pencarian ${query} tidak ditemukan`}</p>
+        </>,
+        {
+          position: 'top-right',
+          autoClose: 3000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: false,
+        }
+      )
+    }
   } catch (error) {
     const message =
       error.response && error.response.data.message

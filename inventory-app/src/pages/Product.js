@@ -17,6 +17,7 @@ import Skeleton from 'react-loading-skeleton'
 import ErrorScreen from '../components/ErrorScreen'
 import DisplayStyleButtons from '../components/DisplayStyleButtons'
 import { Combobox } from '@headlessui/react'
+import { PRODUCT_SEARCH_RESET } from '../redux/constant'
 
 const Product = () => {
   const navigate = useNavigate()
@@ -25,6 +26,7 @@ const Product = () => {
   const [isOpen, setIsOpen] = useState(false)
   const [grid, setGrid] = useState('list')
   const [selectedProduct, setSelectedProduct] = useState({})
+  const [query, setQuery] = useState('')
 
   const changeViewToGrid = () => {
     setGrid('grid')
@@ -53,11 +55,42 @@ const Product = () => {
   const productList = useSelector((state) => state.productList)
   const { loading, products, error } = productList
 
+  const productSearch = useSelector((state) => state.productSearch)
+  const {
+    loading: loadingSearch,
+    products: productsSearch,
+    error: errorSearch,
+  } = productSearch
+
   const productDelete = useSelector((state) => state.productDelete)
   const { loading: loadingDelete } = productDelete
 
+  const userLogin = useSelector((state) => state.userLogin)
+  const { userInfo } = userLogin
+
+  const handleQueryChange = (e) => {
+    dispatch({
+      type: PRODUCT_SEARCH_RESET,
+    })
+    setQuery(e.target.value)
+  }
+  const submitSearch = () => {
+    if (query !== '') {
+      dispatch(searchProduct(query))
+    }
+  }
+  const submitSearchEnter = (e) => {
+    if (query !== '' && e.key === 'Enter') {
+      dispatch(searchProduct(query))
+    }
+  }
+
   useEffect(() => {
+    if (!userInfo) {
+      navigate('/Login')
+    }
     dispatch(listProducts())
+
     const getViewStyle = () => {
       const viewStyle = localStorage.getItem('viewStyle')
       if (viewStyle) {
@@ -65,7 +98,7 @@ const Product = () => {
       }
     }
     getViewStyle()
-  }, [dispatch])
+  }, [dispatch, userInfo, navigate])
 
   return (
     <Fragment>
@@ -160,22 +193,27 @@ const Product = () => {
                 <div className='flex max-w-3xl flex-grow items-center space-x-6'>
                   <Combobox
                     className={
-                      'flex-grow rounded-lg border bg-white px-4 focus:border-primary-blue'
+                      'flex-grow   bg-white  focus:border-primary-blue'
                     }
                     as={'div'}
+                    value={query}
+                    onChange={submitSearch}
                   >
                     <div className='flex items-center space-x-1'>
-                      <SearchIcon className='h-5 w-5 text-slate-600' />
-                      <Combobox.Input
-                        className={
-                          'w-full border-none bg-transparent text-sm placeholder-gray-300 focus:border-none focus:ring-0'
-                        }
-                        placeholder='Cari Produk'
-                        onChange={(e) => {
-                          // TODO setting query
-                          dispatch(searchProduct(e.target.value))
-                        }}
-                      />
+                      <div className='flex flex-grow items-center space-x-1 rounded-lg border py-1 px-2'>
+                        <SearchIcon className='h-5 w-5 text-slate-600' />
+                        <Combobox.Input
+                          className={
+                            'border-none bg-transparent text-sm placeholder-gray-300 focus:border-none focus:ring-0'
+                          }
+                          placeholder='Cari Produk'
+                          onChange={handleQueryChange}
+                          onKeyDown={submitSearchEnter}
+                        />
+                      </div>
+                      <div onClick={submitSearch} className='btn primary'>
+                        Cari
+                      </div>
                     </div>
                   </Combobox>
 
@@ -183,21 +221,29 @@ const Product = () => {
                     changeViewToGrid={changeViewToGrid}
                     changeViewToList={changeViewToList}
                   />
-                  {products ? (
+                  {productsSearch?.length > 0 ? (
+                    <h4 className='font-body text-sm text-slate-700'>
+                      Jumlah produk : {productsSearch.length}
+                    </h4>
+                  ) : products ? (
                     <h4 className='font-body text-sm text-slate-700'>
                       Jumlah produk : {products.length}
                     </h4>
-                  ) : (
-                    'error'
-                  )}
+                  ) : null}
                 </div>
               </div>
 
               {grid === 'grid' ? (
-                <div className='grid min-h-screen w-full gap-x-4 gap-y-6 p-3 lg:grid-cols-4'>
-                  {products.map((product) => (
-                    <ProductCard key={product.id} product={product} />
-                  ))}
+                <div className='min-h-screen w-full'>
+                  <div className='grid w-full gap-x-4 gap-y-6 p-3 lg:grid-cols-4'>
+                    {productsSearch?.length > 0
+                      ? productsSearch?.map((product, index) => (
+                          <ProductCard key={index} product={product} />
+                        ))
+                      : products.map((product) => (
+                          <ProductCard key={product.id} product={product} />
+                        ))}
+                  </div>
                 </div>
               ) : (
                 <div className='border-slate relative rounded-xl border bg-gray-50 bg-opacity-75 shadow-sm'>
@@ -234,17 +280,27 @@ const Product = () => {
                       </thead>
 
                       <tbody>
-                        {products &&
-                          products.map((product) => (
-                            <ProductRow
-                              isOpen={isOpen}
-                              openModal={openModal}
-                              closeModal={closeModal}
-                              product={product}
-                              setProduct={setSelectedProduct}
-                              key={product.id}
-                            />
-                          ))}
+                        {productsSearch?.length > 0
+                          ? productsSearch?.map((product, index) => (
+                              <ProductRow
+                                isOpen={isOpen}
+                                openModal={openModal}
+                                closeModal={closeModal}
+                                product={product}
+                                setProduct={setSelectedProduct}
+                                key={product.id}
+                              />
+                            ))
+                          : products.map((product) => (
+                              <ProductRow
+                                isOpen={isOpen}
+                                openModal={openModal}
+                                closeModal={closeModal}
+                                product={product}
+                                setProduct={setSelectedProduct}
+                                key={product.id}
+                              />
+                            ))}
                       </tbody>
                     </table>
                   </div>

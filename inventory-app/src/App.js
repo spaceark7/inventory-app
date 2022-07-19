@@ -1,5 +1,10 @@
-import React from 'react'
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import React, { useEffect } from 'react'
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useNavigate,
+} from 'react-router-dom'
 
 import Login from './pages/Login'
 import HomePage from './pages/HomePage'
@@ -7,7 +12,7 @@ import HomePage from './pages/HomePage'
 function App() {
   return (
     <Router>
-      <div className='App w-full min-h-screen bg-slate-100 relative'>
+      <div className='App relative min-h-screen w-full bg-slate-100'>
         <Routes>
           <Route path='/Login' element={<Login />} />
           <Route path='/*' element={<HomePage />}></Route>

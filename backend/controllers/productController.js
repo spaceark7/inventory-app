@@ -145,8 +145,15 @@ const searchProducts = asyncHandler(async (req, res) => {
       },
     })
     result = result.concat(product_data_by_brand)
+    // filter out duplicate result
+    const seen = new Set()
+    const filteredArr = result.filter((el) => {
+      const duplicate = seen.has(el.id)
+      seen.add(el.id)
+      return !duplicate
+    })
 
-    res.status(201).json(result)
+    res.status(201).json(filteredArr)
   } catch (error) {
     res.status(500).json({ msg: `error : ${error}` })
     console.log(error)
